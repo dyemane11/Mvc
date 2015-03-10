@@ -5,44 +5,37 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.AspNet.JsonPatch.Helpers
 {
 	internal static class PropertyHelpers
 	{
-
-
-
-		public static object GetValue(PropertyInfo propertyToGet, object targetObject, string pathToProperty)
+		public static object GetValue(JsonProperty propertyToGet, object targetObject, string pathToProperty)
 		{
 			// it is possible the path refers to a nested property.  In that case, we need to 
 			// get from a different target object: the nested object.
 
-			var splitPath = pathToProperty.Split('/');
+			//var splitPath = pathToProperty.Split('/');
 
-			// skip the first one if it's empty
-			var startIndex = (string.IsNullOrWhiteSpace(splitPath[0]) ? 1 : 0);
+			//// skip the first one if it's empty
+			//var startIndex = (string.IsNullOrWhiteSpace(splitPath[0]) ? 1 : 0);
 
-			for (int i = startIndex; i < splitPath.Length - 1; i++)
-			{
-				var propertyInfoToGet = GetPropertyInfo(targetObject, splitPath[i]
-					, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-				targetObject = propertyInfoToGet.GetValue(targetObject, null);
-			}
+			//for (int i = startIndex; i < splitPath.Length - 1; i++)
+			//{
+			//	var propertyInfoToGet = GetPropertyInfo(targetObject, splitPath[i]
+			//		, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+			//	targetObject = propertyInfoToGet.GetValue(targetObject, null);
+			//}
 
-
-			return propertyToGet.GetValue(targetObject, null);
+            return propertyToGet.ValueProvider.GetValue(targetObject);
+			//return propertyToGet.GetValue(targetObject, null);
 		}
 
-
-
-
-		public static bool SetValue(PropertyInfo propertyToSet, object targetObject, string pathToProperty, object value)
+		public static bool SetValue(JsonProperty propertyToSet, object targetObject, string pathToProperty, object value)
 		{
 			// it is possible the path refers to a nested property.  In that case, we need to 
 			// set on a different target object: the nested object.
-
-
 			var splitPath = pathToProperty.Split('/');
 
 			// skip the first one if it's empty
@@ -54,19 +47,19 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 					, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 				targetObject = propertyInfoToGet.GetValue(targetObject, null);
 			}
+            propertyToSet.ValueProvider.SetValue(targetObject, value);
 
-
-			propertyToSet.SetValue(targetObject, value, null);
+			//propertyToSet.SetValue(targetObject, value, null);
 
 			return true;
 		}
 
 
-		public static PropertyInfo FindProperty(object targetObject, string propertyPath)
+		public static JsonProperty FindProperty(Type type, string propertyPath, JsonSerializerSettings serializerSettings)
 		{
-			try
+            JsonProperty jsonProperty = null;
+            try
 			{
-
 				var splitPath = propertyPath.Split('/');
 
 				// skip the first one if it's empty
@@ -74,18 +67,26 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 
 				for (int i = startIndex; i < splitPath.Length - 1; i++)
 				{
-					var propertyInfoToGet = GetPropertyInfo(targetObject, splitPath[i]
-						, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-					targetObject = propertyInfoToGet.GetValue(targetObject, null);
+					//var propertyInfoToGet = GetPropertyInfo(targetObject, splitPath[i]
+					//	, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+					//targetObject = propertyInfoToGet.GetValue(targetObject, null);
+
+                    var jsonContract = GetJsonContract(serializerSettings, type);
+
+                    foreach (var property in jsonContract.Properties)
+                    {
+                        if (string.Equals(property.PropertyName, splitPath[i]))
+                        {
+                            type = property.PropertyType;
+                            jsonProperty = property;
+                            
+                            break;
+                        }
+
+                    }
 				}
 
-
-				var propertyToFind = targetObject.GetType().GetProperty(splitPath.Last(),
-						BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-
-				return propertyToFind;
-
-
+                return jsonProperty;
 			}
 			catch (Exception)
 			{
@@ -94,12 +95,12 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 			}
 		}
 
-
 		internal static ConversionResult ConvertToActualType(Type propertyType, object value)
 		{
 			try
 			{
 				var o = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(value), propertyType);
+                
 				return new ConversionResult(true, o);
 			}
 			catch (Exception)
@@ -107,8 +108,6 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 				return new ConversionResult(false, null);
 			}
 		}
-
-
 
 		internal static Type GetEnumerableType(Type type)
 		{
@@ -133,8 +132,6 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 			return null;
 		}
 
-
-
 		internal static int GetNumericEnd(string path)
 		{
 			var possibleIndex = path.Substring(path.LastIndexOf("/") + 1);
@@ -146,9 +143,7 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 			}
 
 			return -1;
-
 		}
-
 
 		private static PropertyInfo GetPropertyInfo(object targetObject, string propertyName,
 		BindingFlags bindingFlags)
@@ -156,5 +151,10 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 			return targetObject.GetType().GetProperty(propertyName, bindingFlags);
 		}
 
-	}
+        public static JsonObjectContract GetJsonContract(JsonSerializerSettings serializerSettings, Type t)
+        {
+            var jsonSerializer = JsonSerializer.Create(serializerSettings);
+            return (JsonObjectContract)jsonSerializer.ContractResolver.ResolveContract(t);
+        }
+    }
 }

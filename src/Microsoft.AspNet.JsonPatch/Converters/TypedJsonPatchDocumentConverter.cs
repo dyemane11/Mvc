@@ -19,13 +19,10 @@ namespace Microsoft.AspNet.JsonPatch.Converters
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
 			JsonSerializer serializer)
 		{
-
 			try
 			{
-
 				if (reader.TokenType == JsonToken.Null)
 					return null;
-
 
 				var genericType = objectType.GetGenericArguments()[0]; 
 
@@ -50,9 +47,8 @@ namespace Microsoft.AspNet.JsonPatch.Converters
 				jObjectReader.DateTimeZoneHandling = reader.DateTimeZoneHandling;
 				jObjectReader.FloatParseHandling = reader.FloatParseHandling;
 
-				// Populate the object properties
+                // Populate the object properties
 				serializer.Populate(jObjectReader, targetOperations);
-
 
 				// container target: the typed JsonPatchDocument. 
 				var container = Activator.CreateInstance(objectType, targetOperations);

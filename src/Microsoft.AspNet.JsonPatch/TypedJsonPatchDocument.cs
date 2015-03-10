@@ -9,30 +9,24 @@ using System.Linq.Expressions;
 
 namespace Microsoft.AspNet.JsonPatch
 {
-
 	// Implementation details: the purpose of this type of patch document is to ensure we can do type-checking
 	// when producing a JsonPatchDocument.  However, we cannot send this "typed" over the wire, as that would require
 	// including type data in the JsonPatchDocument serialized as JSON (to allow for correct deserialization) - that's
 	// not according to RFC 6902, and would thus break cross-platform compatibility. 
-
 	[JsonConverter(typeof(TypedJsonPatchDocumentConverter))]
 	public class JsonPatchDocument<T> : IJsonPatchDocument where T : class
 	{
-
 		public List<Operation<T>> Operations { get; private set; }
-
 
 		public JsonPatchDocument()
 		{
 			Operations = new List<Operation<T>>();
 		}
 
-
 		// Create from list of operations  
 		public JsonPatchDocument(List<Operation<T>> operations)
 		{
 			Operations = operations;
-
 		}
 
 		/// <summary>
@@ -75,7 +69,6 @@ namespace Microsoft.AspNet.JsonPatch
 			Operations.Add(new Operation<T>("add", ExpressionHelpers.GetPath<T, IList<TProp>>(path).ToLower() + "/-", null, value));
 			return this;
 		}
-
 
 		/// <summary>
 		/// Remove value at target location.  Will result in, for example,
@@ -128,7 +121,6 @@ namespace Microsoft.AspNet.JsonPatch
 			return this;
 		}
 
-
 		/// <summary>
 		/// Replace value in a list at given position
 		/// </summary>
@@ -154,9 +146,6 @@ namespace Microsoft.AspNet.JsonPatch
 			return this;
 		}
 
-
-
-
 		/// <summary>
 		/// Removes value at specified location and add it to the target location.  Will result in, for example:
 		/// { "op": "move", "from": "/a/b/c", "path": "/a/b/d" }
@@ -170,8 +159,6 @@ namespace Microsoft.AspNet.JsonPatch
 				, ExpressionHelpers.GetPath<T, TProp>(from).ToLower()));
 			return this;
 		}
-
-
 
 		/// <summary>
 		/// Move from a position in a list to a new location
@@ -187,8 +174,6 @@ namespace Microsoft.AspNet.JsonPatch
 			  , ExpressionHelpers.GetPath<T, IList<TProp>>(from).ToLower() + "/" + positionFrom));
 			return this;
 		}
-
-
 
 		/// <summary>
 		/// Move from a property to a location in a list
@@ -207,7 +192,6 @@ namespace Microsoft.AspNet.JsonPatch
 			return this;
 		}
 
-
 		/// <summary>
 		/// Move from a position in a list to another location in a list
 		/// </summary>
@@ -224,7 +208,6 @@ namespace Microsoft.AspNet.JsonPatch
 			  , ExpressionHelpers.GetPath<T, IList<TProp>>(from).ToLower() + "/" + positionFrom));
 			return this;
 		}
-
 
 		/// <summary>
 		/// Move from a position in a list to the end of another list
@@ -243,9 +226,7 @@ namespace Microsoft.AspNet.JsonPatch
 			return this;
 		}
 
-
-
-		/// <summary>
+     	/// <summary>
 		/// Move to the end of a list
 		/// </summary>
 		/// <typeparam name="TProp"></typeparam>
@@ -259,9 +240,6 @@ namespace Microsoft.AspNet.JsonPatch
 			  , ExpressionHelpers.GetPath<T, TProp>(from).ToLower()));
 			return this;
 		}
-
-
-
 
 		/// <summary>
 		/// Copy the value at specified location to the target location.  Willr esult in, for example:
@@ -277,7 +255,6 @@ namespace Microsoft.AspNet.JsonPatch
 			return this;
 		}
 
-
 		/// <summary>
 		/// Copy from a position in a list to a new location
 		/// </summary>
@@ -292,8 +269,6 @@ namespace Microsoft.AspNet.JsonPatch
 			  , ExpressionHelpers.GetPath<T, IList<TProp>>(from).ToLower() + "/" + positionFrom));
 			return this;
 		}
-
-
 
 		/// <summary>
 		/// Copy from a property to a location in a list
@@ -312,7 +287,6 @@ namespace Microsoft.AspNet.JsonPatch
 			return this;
 		}
 
-
 		/// <summary>
 		/// Copy from a position in a list to a new location in a list
 		/// </summary>
@@ -329,7 +303,6 @@ namespace Microsoft.AspNet.JsonPatch
 			  , ExpressionHelpers.GetPath<T, IList<TProp>>(from).ToLower() + "/" + positionFrom));
 			return this;
 		}
-
 
 		/// <summary>
 		/// Copy from a position in a list to the end of another list
@@ -348,8 +321,6 @@ namespace Microsoft.AspNet.JsonPatch
 			return this;
 		}
 
-
-
 		/// <summary>
 		/// Copy to the end of a list
 		/// </summary>
@@ -365,14 +336,10 @@ namespace Microsoft.AspNet.JsonPatch
 			return this;
 		}
 
-
-		 
-
 		public void ApplyTo(T objectToApplyTo)
 		{
 			ApplyTo(objectToApplyTo, new SimpleObjectAdapter<T>());
 		}
-
 
 		public void ApplyTo(T objectToApplyTo, IObjectAdapter<T> adapter)
 		{
@@ -382,9 +349,7 @@ namespace Microsoft.AspNet.JsonPatch
 			{
 				op.Apply(objectToApplyTo, adapter);
 			}
-
 		}
-		 
 
 		public List<Operation> GetOperations()
 		{

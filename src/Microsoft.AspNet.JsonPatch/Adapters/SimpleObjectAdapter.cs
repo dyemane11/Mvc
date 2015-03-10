@@ -4,14 +4,54 @@ using Microsoft.AspNet.JsonPatch.Helpers;
 using Microsoft.AspNet.JsonPatch.Exceptions;
 using System.Reflection;
 using System.Collections;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.AspNet.JsonPatch.Adapters
 {
-	public class SimpleObjectAdapter<T> : IObjectAdapter<T> where T : class
-	{
+    public class SimpleObjectAdapter<T> : IObjectAdapter<T> where T : class
+    {
+        private JsonSerializerSettings _jsonSerializerSettings;
+        private JsonObjectContract jsonContract;
 
+        public SimpleObjectAdapter(IContractResolver contractResolver)
+        {
+            _jsonSerializerSettings = new JsonSerializerSettings
+            {
+                MissingMemberHandling = MissingMemberHandling.Ignore,
 
-		/// <summary>
+                // Limit the object graph we'll consume to a fixed depth. This prevents stackoverflow exceptions
+                // from deserialization errors that might occur from deeply nested objects.
+                MaxDepth = 32,
+
+                // Do not change this setting
+                // Setting this to None prevents Json.NET from loading malicious, unsafe, or security-sensitive types
+                TypeNameHandling = TypeNameHandling.None
+            };
+
+            _jsonSerializerSettings.ContractResolver = (contractResolver != null) ? contractResolver :
+                new DefaultContractResolver();
+
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="JsonSerializerSettings"/> used to configure the <see cref="JsonSerializer"/>.
+        /// </summary>
+        public JsonSerializerSettings SerializerSettings
+        {
+            get { return _jsonSerializerSettings; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
+                _jsonSerializerSettings = value;
+            }
+        }
+
+        /// <summary>
 		/// The "add" operation performs one of the following functions,
 		/// depending upon what the target location references:
 		/// 
@@ -73,9 +113,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
 		/// <param name="objectApplyTo">Object to apply the operation to</param>
 		public void Add(Operation<T> operation, T objectToApplyTo)
 		{
-
 			Add(operation.path, operation.value, objectToApplyTo, operation);
-
 		}
 
 
@@ -113,9 +151,8 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
 				}
 			}
 
-
 			var pathProperty = PropertyHelpers
-				.FindProperty(objectToApplyTo, actualPathToProperty);
+				.FindProperty(objectToApplyTo.GetType(), actualPathToProperty, SerializerSettings);
 
 
 			// does property at path exist?
@@ -247,7 +284,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
 			}
 
 			var fromProperty = PropertyHelpers
-				.FindProperty(objectToApplyTo, actualFromProperty);
+				.FindProperty(objectToApplyTo.GetType(), actualFromProperty, SerializerSettings);
 
 
 			// does property at from exist?
@@ -365,7 +402,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
 			}
 
 			var pathProperty = PropertyHelpers
-				.FindProperty(objectToApplyTo, actualPathToProperty);
+				.FindProperty(objectToApplyTo.GetType(), actualPathToProperty, SerializerSettings);
 
 			// does the target location exist?
 			if (pathProperty == null)
@@ -504,7 +541,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
 			}
 
 			var pathProperty = PropertyHelpers
-				.FindProperty(objectToApplyTo, actualPathProperty);
+				.FindProperty(objectToApplyTo.GetType(), actualPathProperty, SerializerSettings);
 
 			// does property at path exist?
 			if (pathProperty == null)
@@ -652,8 +689,8 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
 			}
 
 
-			PropertyInfo fromProperty = PropertyHelpers
-				.FindProperty(objectToApplyTo, actualFromProperty);
+			var fromProperty = PropertyHelpers
+				.FindProperty(objectToApplyTo.GetType(), actualFromProperty, SerializerSettings);
 
 			// does property at from exist?
 			if (fromProperty == null)
@@ -716,7 +753,5 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
 			Add(operation.path, valueAtFromLocation, objectToApplyTo, operation);
 
 		}
-
-
-	}
+    }
 }

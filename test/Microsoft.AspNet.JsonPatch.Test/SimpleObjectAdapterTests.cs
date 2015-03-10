@@ -9,7 +9,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 {
 	public class SimpleObjectAdapterTests
 	{
-
 		[Fact]
 		public void AddResultsShouldReplace()
 		{
@@ -25,7 +24,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			patchDoc.ApplyTo(doc);
 
 			Assert.Equal("B", doc.StringProperty);
-
 		}
 
 		[Fact]
@@ -41,13 +39,13 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			patchDoc.Add<string>(o => o.StringProperty, "B");
 
 
-			var serialized = JsonConvert.SerializeObject(patchDoc);
-			var deserialized = JsonConvert.DeserializeObject<JsonPatchDocument<SimpleDTO>>(serialized);
+            var serialized = JsonConvert.SerializeObject(patchDoc);
+                
+            var deserialized = JsonConvert.DeserializeObject<JsonPatchDocument<SimpleDTO>>(serialized);
 
 			deserialized.ApplyTo(doc);
 
 			Assert.Equal("B", doc.StringProperty);
-
 		}
 
 
@@ -81,10 +79,8 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			JsonPatchDocument<SimpleDTO> patchDoc = new JsonPatchDocument<SimpleDTO>();
 			patchDoc.Add<int>(o => o.IntegerList, 4, 0);
 
-
 			var serialized = JsonConvert.SerializeObject(patchDoc);
 			var deserialized = JsonConvert.DeserializeObject<JsonPatchDocument<SimpleDTO>>(serialized);
-
 
 			deserialized.ApplyTo(doc);
 
@@ -123,8 +119,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			var serialized = JsonConvert.SerializeObject(patchDoc);
 			var deserialized = JsonConvert.DeserializeObject<JsonPatchDocument<SimpleDTO>>(serialized);
 
-
-
 			Assert.Throws<JsonPatchException<SimpleDTO>>(() => { deserialized.ApplyTo(doc); });
 		}
 
@@ -132,7 +126,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 		[Fact]
 		public void AddToListInvalidPositionTooSmall()
 		{
-
 			var doc = new SimpleDTO()
 			{
 				IntegerList = new List<int>() { 1, 2, 3 }
@@ -143,13 +136,11 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			patchDoc.Add<int>(o => o.IntegerList, 4, -1);
 
 			Assert.Throws<JsonPatchException<SimpleDTO>>(() => { patchDoc.ApplyTo(doc); });
-
 		}
 
 		[Fact]
 		public void AddToListInvalidPositionTooSmallWithSerialization()
 		{
-
 			var doc = new SimpleDTO()
 			{
 				IntegerList = new List<int>() { 1, 2, 3 }
@@ -163,9 +154,7 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			var deserialized = JsonConvert.DeserializeObject<JsonPatchDocument<SimpleDTO>>(serialized);
 
 			Assert.Throws<JsonPatchException<SimpleDTO>>(() => { deserialized.ApplyTo(doc); });
-
 		}
-
 
 		[Fact]
 		public void AddToListAppend()
@@ -182,11 +171,7 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			patchDoc.ApplyTo(doc);
 
 			Assert.Equal(new List<int>() { 1, 2, 3, 4 }, doc.IntegerList);
-
 		}
-
-
-
 
 		[Fact]
 		public void AddToListAppendWithSerialization()
@@ -206,9 +191,7 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			deserialized.ApplyTo(doc);
 
 			Assert.Equal(new List<int>() { 1, 2, 3, 4 }, doc.IntegerList);
-
 		}
-
 
 		[Fact]
 		public void Remove()
@@ -225,11 +208,7 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			patchDoc.ApplyTo(doc);
 
 			Assert.Equal(null, doc.StringProperty);
-
 		}
-
-
-
 
 		[Fact]
 		public void RemoveWithSerialization()
@@ -249,10 +228,7 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			deserialized.ApplyTo(doc);
 
 			Assert.Equal(null, doc.StringProperty);
-
 		}
-
-
 
 		[Fact]
 		public void RemoveFromList()
@@ -270,7 +246,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 
 			Assert.Equal(new List<int>() { 1, 2 }, doc.IntegerList);
 		}
-
 
 		[Fact]
 		public void RemoveFromListWithSerialization()
@@ -292,7 +267,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			Assert.Equal(new List<int>() { 1, 2 }, doc.IntegerList);
 		}
 
-
 		[Fact]
 		public void RemoveFromListInvalidPositionTooLarge()
 		{
@@ -305,11 +279,8 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			JsonPatchDocument<SimpleDTO> patchDoc = new JsonPatchDocument<SimpleDTO>();
 			patchDoc.Remove<int>(o => o.IntegerList, 3);
 
-
 			Assert.Throws<JsonPatchException<SimpleDTO>>(() => { patchDoc.ApplyTo(doc); });
-
 		}
-
 
 		[Fact]
 		public void RemoveFromListInvalidPositionTooLargeWithSerialization()
@@ -327,14 +298,12 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			var deserialized = JsonConvert.DeserializeObject<JsonPatchDocument<SimpleDTO>>(serialized);
 
 			Assert.Throws<JsonPatchException<SimpleDTO>>(() => { deserialized.ApplyTo(doc); });
-
 		}
 
 
 		[Fact]
 		public void RemoveFromListInvalidPositionTooSmall()
 		{
-
 			var doc = new SimpleDTO()
 			{
 				IntegerList = new List<int>() { 1, 2, 3 }
@@ -345,13 +314,11 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			patchDoc.Remove<int>(o => o.IntegerList, -1);
 
 			Assert.Throws<JsonPatchException<SimpleDTO>>(() => { patchDoc.ApplyTo(doc); });
-
 		}
 
 		[Fact]
 		public void RemoveFromListInvalidPositionTooSmallWithSerialization()
 		{
-
 			var doc = new SimpleDTO()
 			{
 				IntegerList = new List<int>() { 1, 2, 3 }
@@ -365,7 +332,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			var deserialized = JsonConvert.DeserializeObject<JsonPatchDocument<SimpleDTO>>(serialized);
 
 			Assert.Throws<JsonPatchException<SimpleDTO>>(() => { deserialized.ApplyTo(doc); });
-
 		}
 
 
@@ -384,7 +350,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			patchDoc.ApplyTo(doc);
 
 			Assert.Equal(new List<int>() { 1, 2 }, doc.IntegerList);
-
 		}
 
 		[Fact]
@@ -405,7 +370,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			deserialized.ApplyTo(doc);
 
 			Assert.Equal(new List<int>() { 1, 2 }, doc.IntegerList);
-
 		}
 
 
@@ -428,7 +392,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 
 			Assert.Equal("B", doc.StringProperty);
 			Assert.Equal(12, doc.DecimalValue);
-
 		}
 
 
