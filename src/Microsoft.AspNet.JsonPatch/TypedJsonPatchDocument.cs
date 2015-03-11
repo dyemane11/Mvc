@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNet.JsonPatch.Adapters;
+﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using Microsoft.AspNet.JsonPatch.Adapters;
 using Microsoft.AspNet.JsonPatch.Converters;
 using Microsoft.AspNet.JsonPatch.Helpers;
 using Microsoft.AspNet.JsonPatch.Operations;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace Microsoft.AspNet.JsonPatch
 {
@@ -39,7 +42,11 @@ namespace Microsoft.AspNet.JsonPatch
 		/// <returns></returns>
 		public JsonPatchDocument<T> Add<TProp>(Expression<Func<T, TProp>> path, TProp value)
 		{
-			Operations.Add(new Operation<T>("add", ExpressionHelpers.GetPath<T, TProp>(path).ToLower(), null, value));
+			Operations.Add(new Operation<T>(
+                "add",
+                ExpressionHelpers.GetPath<T, TProp>(path).ToLower(),
+                from: null,
+                value: value));
 			return this;
 		}
 
@@ -53,7 +60,10 @@ namespace Microsoft.AspNet.JsonPatch
 		/// <returns></returns>
 		public JsonPatchDocument<T> Add<TProp>(Expression<Func<T, IList<TProp>>> path, TProp value, int position)
 		{
-			Operations.Add(new Operation<T>("add", ExpressionHelpers.GetPath<T, IList<TProp>>(path).ToLower() + "/" + position, null, value));
+			Operations.Add(new Operation<T>(
+                "add", 
+                ExpressionHelpers.GetPath<T, IList<TProp>>(path).ToLower() + "/" + position, 
+                null, value));
 			return this;
 		}
 
@@ -338,7 +348,7 @@ namespace Microsoft.AspNet.JsonPatch
 
 		public void ApplyTo(T objectToApplyTo)
 		{
-			ApplyTo(objectToApplyTo, new SimpleObjectAdapter<T>());
+			ApplyTo(objectToApplyTo, new SimpleObjectAdapter<T>(contractResolver: null));
 		}
 
 		public void ApplyTo(T objectToApplyTo, IObjectAdapter<T> adapter)
@@ -373,5 +383,4 @@ namespace Microsoft.AspNet.JsonPatch
 			return allOps;
 		}
 	}
-
 }

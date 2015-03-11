@@ -1,5 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System;
+using Newtonsoft.Json;
 
 namespace Microsoft.AspNet.JsonPatch.Operations
 {
@@ -14,7 +17,6 @@ namespace Microsoft.AspNet.JsonPatch.Operations
 			}
 		}
 
-
 		[JsonProperty("path")]
 		public string path { get; set; }
 
@@ -23,7 +25,6 @@ namespace Microsoft.AspNet.JsonPatch.Operations
 
 		[JsonProperty("from")]
 		public string from { get; set; }
-
 
 		public OperationBase()
 		{
@@ -37,13 +38,10 @@ namespace Microsoft.AspNet.JsonPatch.Operations
 			this.from = from;
 		}
 
-
-
 		public bool ShouldSerializefrom()
 		{
 			return (OperationType == Operations.OperationType.Move
 				|| OperationType == OperationType.Copy);
 		}
 	}
-
 }

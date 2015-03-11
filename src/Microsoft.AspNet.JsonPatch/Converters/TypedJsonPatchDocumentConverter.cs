@@ -1,18 +1,19 @@
-﻿using Microsoft.AspNet.JsonPatch.Exceptions;
+﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
+using System.Collections.Generic;
+using Microsoft.AspNet.JsonPatch.Exceptions;
 using Microsoft.AspNet.JsonPatch.Operations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace Microsoft.AspNet.JsonPatch.Converters
 {
-	public class TypedJsonPatchDocumentConverter : JsonConverter
+    public class TypedJsonPatchDocumentConverter : JsonConverter
 	{
 		public override bool CanConvert(Type objectType)
 		{
-
 			return true;
 		}
 
@@ -21,8 +22,10 @@ namespace Microsoft.AspNet.JsonPatch.Converters
 		{
 			try
 			{
-				if (reader.TokenType == JsonToken.Null)
-					return null;
+                if (reader.TokenType == JsonToken.Null)
+                {
+                    return null;
+                }
 
 				var genericType = objectType.GetGenericArguments()[0]; 
 
@@ -30,7 +33,6 @@ namespace Microsoft.AspNet.JsonPatch.Converters
 				var jObject = JArray.Load(reader);
 
 				// Create target object for Json => list of operations, typed to genericType
-
 				var genericOperation = typeof(Operation<>);
 				var concreteOperationType = genericOperation.MakeGenericType(genericType);
 
@@ -38,7 +40,6 @@ namespace Microsoft.AspNet.JsonPatch.Converters
 				var concreteList = genericList.MakeGenericType(concreteOperationType);
 
 				var targetOperations = Activator.CreateInstance(concreteList);
-
 
 				//Create a new reader for this jObject, and set all properties to match the original reader.
 				JsonReader jObjectReader = jObject.CreateReader();
@@ -54,13 +55,11 @@ namespace Microsoft.AspNet.JsonPatch.Converters
 				var container = Activator.CreateInstance(objectType, targetOperations);
 
 				return container;
-
 			}
 			catch (Exception ex)
 			{
 				throw new JsonPatchException("The JsonPatchDocument was malformed and could not be parsed.", ex);
 			}
-
 		}
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -72,7 +71,6 @@ namespace Microsoft.AspNet.JsonPatch.Converters
 
 				// write out the operations, no envelope
 				serializer.Serialize(writer, lst);
-
 			}
 		}
 	}

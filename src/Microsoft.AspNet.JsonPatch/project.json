@@ -7,13 +7,13 @@
     },
 
 	"frameworks": {
-		"aspnet50": {
+		"dnx451": {
 			"dependencies": {
 				"System.Globalization": "4.0.10-beta-22623",
 				"System.Reflection": "4.0.10-beta-22623"
 			}
 		},
-		"aspnetcore50": {
+		"dnxcore50": {
 			"dependencies": {
 				"Microsoft.CSharp": "4.0.0-beta-22623",
 				"System.Collections":  "4.0.10-beta-22623",

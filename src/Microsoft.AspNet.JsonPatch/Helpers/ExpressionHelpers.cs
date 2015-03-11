@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using System.Globalization;
 using System.Linq.Expressions;
 
@@ -6,14 +9,12 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 {
 	internal static class ExpressionHelpers
 	{
-
 		public static string GetPath<T, TProp>(Expression<Func<T, TProp>> expr) where T : class
 		{
 			return "/" + GetPath(expr.Body, true);
 		}
 
-		
-		private static string GetPath(Expression expr, bool firstTime)
+        private static string GetPath(Expression expr, bool firstTime)
 		{
 			switch (expr.NodeType)
 			{
@@ -29,8 +30,6 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 					{
 						return binaryExpression.Right.ToString();
 					}
-
-				
 				case ExpressionType.Call:
 					var methodCallExpression = (MethodCallExpression)expr;
 				
@@ -44,13 +43,9 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 					{
 						return GetIndexerInvocation(methodCallExpression.Arguments[0]);
 					}				 
-
 				case ExpressionType.Convert:
-
-					return GetPath(((UnaryExpression)expr).Operand, false);
-
+                    return GetPath(((UnaryExpression)expr).Operand, false);
 				case ExpressionType.MemberAccess:
-
 					var memberExpression = expr as MemberExpression;
 				
 					if (ContinueWithSubPath(memberExpression.Expression.NodeType, false))
@@ -62,16 +57,13 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 					{
 						return memberExpression.Member.Name;
 					}
-					
 				case ExpressionType.Parameter:
 					// Fits "x => x" (the whole document which is "" as JSON pointer)
 					return  firstTime ? "" : null;
-
 				default:
 					return "";
 			}
 		}
-
 
 		private static bool ContinueWithSubPath(ExpressionType expressionType, bool firstTime)
 		{
@@ -90,9 +82,7 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 					|| expressionType == ExpressionType.Convert
 					|| expressionType == ExpressionType.MemberAccess);
             }
-
 		}
-
 
 		private static string GetIndexerInvocation(Expression expression)
 		{
@@ -105,6 +95,5 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 
 			return Convert.ToString(func(null), CultureInfo.InvariantCulture);
 		}
-
 	}
 }

@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNet.JsonPatch.Adapters;
-using System;
+﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using Microsoft.AspNet.JsonPatch.Adapters;
 
 namespace Microsoft.AspNet.JsonPatch.Operations
 {
 	public class Operation<T> : Operation where T : class
 	{
-
-
 		public Operation()
 		{
 
@@ -23,8 +23,6 @@ namespace Microsoft.AspNet.JsonPatch.Operations
 		{
 
 		}
-
-
 
 		public void Apply(T objectToApplyTo, IObjectAdapter<T> adapter)
 		{
@@ -53,16 +51,11 @@ namespace Microsoft.AspNet.JsonPatch.Operations
 			}
 		}
 
-
-
-
 		public bool ShouldSerializevalue()
 		{
 			return (OperationType == Operations.OperationType.Add
 				|| OperationType == OperationType.Replace
 				|| OperationType == OperationType.Test);
 		}
-
-
 	}
 }

@@ -98,7 +98,7 @@ namespace Microsoft.AspNet.JsonPatch.Test
 
 			// create patch
 			JsonPatchDocument<SimpleDTO> patchDoc = new JsonPatchDocument<SimpleDTO>();
-			patchDoc.Add<int>(o => o.IntegerList, 4, 3);
+			patchDoc.Add<int>(o => o.IntegerList, 4, 4);
 
 			Assert.Throws<JsonPatchException<SimpleDTO>>(() => { patchDoc.ApplyTo(doc); });
 		}
@@ -114,7 +114,7 @@ namespace Microsoft.AspNet.JsonPatch.Test
 
 			// create patch
 			JsonPatchDocument<SimpleDTO> patchDoc = new JsonPatchDocument<SimpleDTO>();
-			patchDoc.Add<int>(o => o.IntegerList, 4, 3);
+			patchDoc.Add<int>(o => o.IntegerList, 4, 4);
 
 			var serialized = JsonConvert.SerializeObject(patchDoc);
 			var deserialized = JsonConvert.DeserializeObject<JsonPatchDocument<SimpleDTO>>(serialized);
@@ -545,7 +545,6 @@ namespace Microsoft.AspNet.JsonPatch.Test
 			// create patch
 			JsonPatchDocument<SimpleDTO> patchDoc = new JsonPatchDocument<SimpleDTO>();
 			patchDoc.Replace(o => o.GuidValue, newGuid);
-
 
 			// serialize & deserialize 
 			var serialized = JsonConvert.SerializeObject(patchDoc);
