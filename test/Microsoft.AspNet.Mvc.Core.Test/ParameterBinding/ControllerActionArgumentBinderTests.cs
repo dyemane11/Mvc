@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http.Core;
 using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNet.Routing;
 using Moq;
 using Xunit;
@@ -46,109 +47,6 @@ namespace Microsoft.AspNet.Mvc.Core.Test
         public void ParameterHasEmptyBindAttribute([Bind] MySimpleModel parameter,
                                                    [Bind] MySimpleModelWithTypeBasedBind parameter1)
         {
-        }
-
-        [Fact]
-        public void GetModelBindingContext_ReturnsOnlyIncludedProperties_UsingBindAttributeInclude()
-        {
-            // Arrange
-            var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
-            var modelMetadata = metadataProvider.GetMetadataForType(
-                typeof(TypeWithIncludedPropertiesUsingBindAttribute));
-
-            // Act
-            var context = DefaultControllerActionArgumentBinder.GetModelBindingContext(
-                modelMetadata,
-                new ModelStateDictionary(),
-                Mock.Of<OperationBindingContext>());
-
-            // Assert
-            Assert.True(context.PropertyFilter(context, "IncludedExplicitly1"));
-            Assert.True(context.PropertyFilter(context, "IncludedExplicitly2"));
-        }
-
-        [Fact]
-        public void GetModelBindingContext_UsesBindAttributeOnType_IfNoBindAttributeOnParameter_ForPrefix()
-        {
-            // Arrange
-            var type = typeof(ControllerActionArgumentBinderTests);
-            var methodInfo = type.GetMethod("ParameterWithNoBindAttribute");
-            var parameterInfo = methodInfo.GetParameters().Where(p => p.Name == "parameter").Single();
-
-            var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
-            var modelMetadata = metadataProvider.GetMetadataForParameter(
-                parameterInfo,
-                attributes: null);
-
-            // Act
-            var context = DefaultControllerActionArgumentBinder.GetModelBindingContext(
-                modelMetadata,
-                new ModelStateDictionary(),
-                Mock.Of<OperationBindingContext>());
-
-            // Assert
-            Assert.Equal("TypePrefix", context.ModelName);
-        }
-
-        [Theory]
-        [InlineData("ParameterHasFieldPrefix", false, "simpleModelPrefix")]
-        [InlineData("ParameterHasEmptyFieldPrefix", false, "")]
-        [InlineData("ParameterHasPrefixAndComplexType", false, "simpleModelPrefix")]
-        [InlineData("ParameterHasEmptyBindAttribute", true, "parameter")]
-        public void GetModelBindingContext_ModelBindingContextIsSetWithModelName_ForParameters(
-            string actionMethodName,
-            bool expectedFallToEmptyPrefix,
-            string expectedModelName)
-        {
-            // Arrange
-            var type = typeof(ControllerActionArgumentBinderTests);
-            var methodInfo = type.GetMethod(actionMethodName);
-            var parameterInfo = methodInfo.GetParameters().Where(p => p.Name == "parameter").Single();
-
-            var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
-            var modelMetadata = metadataProvider.GetMetadataForParameter(
-                parameterInfo,
-                attributes: null);
-
-            // Act
-            var context = DefaultControllerActionArgumentBinder.GetModelBindingContext(
-                modelMetadata, 
-                new ModelStateDictionary(),
-                Mock.Of<OperationBindingContext>());
-
-            // Assert
-            Assert.Equal(expectedFallToEmptyPrefix, context.FallbackToEmptyPrefix);
-            Assert.Equal(expectedModelName, context.ModelName);
-        }
-
-        [Theory]
-        [InlineData("ParameterHasEmptyFieldPrefix", false, "")]
-        [InlineData("ParameterHasPrefixAndComplexType", false, "simpleModelPrefix")]
-        [InlineData("ParameterHasEmptyBindAttribute", true, "parameter1")]
-        public void GetModelBindingContext_ModelBindingContextIsNotSet_ForTypes(
-            string actionMethodName,
-            bool expectedFallToEmptyPrefix,
-            string expectedModelName)
-        {
-            // Arrange
-            var type = typeof(ControllerActionArgumentBinderTests);
-            var methodInfo = type.GetMethod(actionMethodName);
-            var parameterInfo = methodInfo.GetParameters().Where(p => p.Name == "parameter1").Single();
-
-            var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
-            var modelMetadata = metadataProvider.GetMetadataForParameter(
-                parameterInfo,
-                attributes: null);
-
-            // Act
-            var context = DefaultControllerActionArgumentBinder.GetModelBindingContext(
-                modelMetadata,
-                new ModelStateDictionary(),
-                Mock.Of<OperationBindingContext>());
-
-            // Assert
-            Assert.Equal(expectedFallToEmptyPrefix, context.FallbackToEmptyPrefix);
-            Assert.Equal(expectedModelName, context.ModelName);
         }
 
         [Fact]
@@ -192,6 +90,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 modelMetadataProvider,
                 new DefaultObjectValidator(Mock.Of<IValidationExcludeFiltersProvider>(), modelMetadataProvider),
+                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 new MockMvcOptionsAccessor());
 
             // Act
@@ -243,6 +142,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 modelMetadataProvider,
                 new DefaultObjectValidator(Mock.Of<IValidationExcludeFiltersProvider>(), modelMetadataProvider),
+                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 new MockMvcOptionsAccessor());
 
             // Act
@@ -298,6 +198,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 metadataProvider,
                 mockValidatorProvider.Object,
+                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 new MockMvcOptionsAccessor());
 
             // Act
@@ -351,6 +252,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 TestModelMetadataProvider.CreateDefaultProvider(),
                 mockValidatorProvider.Object,
+                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 new MockMvcOptionsAccessor());
 
             // Act
@@ -400,6 +302,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 TestModelMetadataProvider.CreateDefaultProvider(),
                 mockValidatorProvider.Object,
+                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 new MockMvcOptionsAccessor());
 
             // Act
@@ -455,6 +358,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 TestModelMetadataProvider.CreateDefaultProvider(),
                 mockValidatorProvider.Object,
+                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 options);
 
             // Act

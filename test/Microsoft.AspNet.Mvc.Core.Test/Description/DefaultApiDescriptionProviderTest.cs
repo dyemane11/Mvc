@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNet.Mvc.Routing;
 using Microsoft.AspNet.Routing;
 using Microsoft.AspNet.Routing.Constraints;
@@ -923,7 +924,12 @@ namespace Microsoft.AspNet.Mvc.Description
             var provider = new DefaultApiDescriptionProvider(
                 formattersProvider.Object,
                 constraintResolver.Object,
-                modelMetadataProvider);
+                modelMetadataProvider,
+                new DefaultCompositeMetadataDetailsProvider(new IMetadataDetailsProvider[]
+                {
+                    new DataAnnotationsMetadataDetailsProvider(),
+                    new DefaultBindingMetadataProvider()
+                }));
 
             provider.OnProvidersExecuting(context);
             provider.OnProvidersExecuted(context);

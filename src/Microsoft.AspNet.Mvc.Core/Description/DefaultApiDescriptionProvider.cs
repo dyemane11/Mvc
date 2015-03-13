@@ -4,8 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNet.Routing;
 using Microsoft.AspNet.Routing.Template;
 using Microsoft.Framework.Internal;
@@ -22,6 +24,7 @@ namespace Microsoft.AspNet.Mvc.Description
         private readonly IOutputFormattersProvider _formattersProvider;
         private readonly IModelMetadataProvider _modelMetadataProvider;
         private readonly IInlineConstraintResolver _constraintResolver;
+        private readonly ICompositeMetadataDetailsProvider _compositeMetadataDetailsProvider;
 
         /// <summary>
         /// Creates a new instance of <see cref="DefaultApiDescriptionProvider"/>.
@@ -31,11 +34,13 @@ namespace Microsoft.AspNet.Mvc.Description
         public DefaultApiDescriptionProvider(
             IOutputFormattersProvider formattersProvider,
             IInlineConstraintResolver constraintResolver,
-            IModelMetadataProvider modelMetadataProvider)
+            IModelMetadataProvider modelMetadataProvider,
+            ICompositeMetadataDetailsProvider compositeMetadataDetailsProvider)
         {
             _formattersProvider = formattersProvider;
             _constraintResolver = constraintResolver;
             _modelMetadataProvider = modelMetadataProvider;
+            _compositeMetadataDetailsProvider = compositeMetadataDetailsProvider;
         }
 
         /// <inheritdoc />
@@ -127,7 +132,6 @@ namespace Microsoft.AspNet.Mvc.Description
 
             return apiDescription;
         }
-
         private IList<ApiParameterDescription> GetParameters(ApiParameterContext context)
         {
             // First, get parameters from the model-binding/parameter-binding side of the world.
@@ -136,7 +140,26 @@ namespace Microsoft.AspNet.Mvc.Description
                 foreach (var actionParameter in context.ActionDescriptor.Parameters)
                 {
                     var visitor = new PseudoModelBindingVisitor(context, actionParameter);
-                    visitor.WalkParameter();
+                    var metadata = _modelMetadataProvider.GetMetadataForType(actionParameter.ParameterType);
+
+                    var parameterInfo = context.ActionDescriptor.MethodInfo.GetParameters()
+                        .Where(p => p.Name == actionParameter.Name)
+                        .Single();
+
+                    var allAttributes = new List<object>();
+                    allAttributes.Add(actionParameter.BinderMetadata);
+                    allAttributes.AddRange(parameterInfo.GetCustomAttributes());
+
+                    var bindingMetadataProviderContext = new BindingMetadataProviderContext(
+                        ModelMetadataIdentity.ForParameter(parameterInfo),
+                        allAttributes);
+                    _compositeMetadataDetailsProvider.GetBindingMetadata(bindingMetadataProviderContext);
+
+                    var bindingContext = ApiDescriptorBindingContext.GetContext(
+                        metadata,
+                        bindingMetadataProviderContext.BindingMetadata,
+                        propertyName: actionParameter.Name);
+                    visitor.WalkParameter(bindingContext);
                 }
             }
 
@@ -414,6 +437,31 @@ namespace Microsoft.AspNet.Mvc.Description
             public IReadOnlyList<TemplatePart> RouteParameters { get; }
         }
 
+        private class ApiDescriptorBindingContext
+        {
+            public ModelMetadata ModelMetadata { get; set; }
+
+            public string BinderModelName { get; set; }
+
+            public BindingSource BindingSource { get; set; }
+
+            public string PropertyName { get; set; }
+
+            public static ApiDescriptorBindingContext GetContext(
+                ModelMetadata metadata,
+                BindingMetadata bindingMetadata,
+                string propertyName)
+            {
+                return new ApiDescriptorBindingContext
+                {
+                    ModelMetadata = metadata,
+                    BinderModelName = bindingMetadata?.BinderModelName ?? metadata.BinderModelName,
+                    BindingSource = bindingMetadata?.BindingSource ?? metadata.BindingSource,
+                    PropertyName = propertyName ?? metadata.PropertyName
+                };
+            }
+        }
+
         private class PseudoModelBindingVisitor
         {
             public PseudoModelBindingVisitor(ApiParameterContext context, ParameterDescriptor parameter)
@@ -431,29 +479,20 @@ namespace Microsoft.AspNet.Mvc.Description
             // Avoid infinite recursion by tracking properties. 
             private HashSet<PropertyKey> Visited { get; }
 
-            public void WalkParameter()
+            public void WalkParameter(ApiDescriptorBindingContext context)
             {
-                var parameterInfo =
-                    Context.ActionDescriptor.MethodInfo.GetParameters()
-                    .Where(p => p.Name == Parameter.Name)
-                    .Single();
-
-                var modelMetadata = Context.MetadataProvider.GetMetadataForParameter(
-                    parameterInfo,
-                    attributes: new object[] { Parameter.BinderMetadata });
-
                 // Attempt to find a binding source for the parameter
                 //
                 // The default is ModelBinding (aka all default value providers)
                 var source = BindingSource.ModelBinding;
-                if (!Visit(modelMetadata, source, containerName: string.Empty))
+                if (!Visit(context, source, containerName: string.Empty))
                 {
                     // If we get here, then it means we didn't find a match for any of the model. This means that it's
                     // likely 'model-bound' in the traditional MVC sense (formdata + query string + route data) and
                     // doesn't use any IBinderMetadata.
                     // 
                     // Add a single 'default' parameter description for the model.
-                    Context.Results.Add(CreateResult(modelMetadata, source, containerName: string.Empty));
+                    Context.Results.Add(CreateResult(context, source, containerName: string.Empty));
                 }
             }
 
@@ -473,17 +512,19 @@ namespace Microsoft.AspNet.Mvc.Description
             /// or NONE of it. If a parameter description is created for ANY sub-properties of the model, then a parameter
             /// description will be created for ALL of them.
             /// </remarks>
-            private bool Visit(ModelMetadata modelMetadata, BindingSource ambientSource, string containerName)
+            private bool Visit(ApiDescriptorBindingContext bindingContext, BindingSource ambientSource, string containerName)
             {
-                var source = modelMetadata.BindingSource;
+                var source = bindingContext.BindingSource;
                 if (source != null && source.IsGreedy)
                 {
                     // We have a definite answer for this model. This is a greedy source like
                     // [FromBody] so there's no need to consider properties.
-                    Context.Results.Add(CreateResult(modelMetadata, source, containerName));
+                    Context.Results.Add(CreateResult(bindingContext, source, containerName));
 
                     return true;
                 }
+
+                var modelMetadata = bindingContext.ModelMetadata;
 
                 // For any property which is a leaf node, we don't want to keep traversing:
                 //
@@ -509,7 +550,7 @@ namespace Microsoft.AspNet.Mvc.Description
                     {
                         // We found a new source, and this model has no properties. This is probabaly
                         // a simple type with an attribute like [FromQuery].
-                        Context.Results.Add(CreateResult(modelMetadata, source, containerName));
+                        Context.Results.Add(CreateResult(bindingContext, source, containerName));
                         return true;
                     }
                 }
@@ -537,29 +578,30 @@ namespace Microsoft.AspNet.Mvc.Description
                 //  Order - source: Body
                 //
 
-                var unboundProperties = new HashSet<ModelMetadata>();
+                var unboundProperties = new HashSet<ApiDescriptorBindingContext>();
 
                 // We don't want to append the **parameter** name when building a model name.
                 var newContainerName = containerName;
                 if (modelMetadata.ContainerType != null)
                 {
-                    newContainerName = GetName(containerName, modelMetadata);
+                    newContainerName = GetName(containerName, bindingContext);
                 }
 
                 foreach (var propertyMetadata in modelMetadata.Properties)
                 {
                     var key = new PropertyKey(propertyMetadata, source);
 
+                    var newApiDescriptorContext = ApiDescriptorBindingContext.GetContext(propertyMetadata, null, null);
                     if (Visited.Add(key))
                     {
-                        if (!Visit(propertyMetadata, source ?? ambientSource, newContainerName))
+                        if (!Visit(newApiDescriptorContext, source ?? ambientSource, newContainerName))
                         {
-                            unboundProperties.Add(propertyMetadata);
+                            unboundProperties.Add(newApiDescriptorContext);
                         }
                     }
                     else
                     {
-                        unboundProperties.Add(propertyMetadata);
+                        unboundProperties.Add(newApiDescriptorContext);
                     }
                 }
 
@@ -574,7 +616,7 @@ namespace Microsoft.AspNet.Mvc.Description
                     {
                         // We found a new source, and didn't create a result for any of the properties yet,
                         // so create a result for the current object.
-                        Context.Results.Add(CreateResult(modelMetadata, source, containerName));
+                        Context.Results.Add(CreateResult(bindingContext, source, containerName));
                         return true;
                     }
                 }
@@ -592,20 +634,20 @@ namespace Microsoft.AspNet.Mvc.Description
             }
 
             private ApiParameterDescription CreateResult(
-                ModelMetadata metadata,
+                ApiDescriptorBindingContext bindingContext,
                 BindingSource source,
                 string containerName)
             {
                 return new ApiParameterDescription()
                 {
-                    ModelMetadata = metadata,
-                    Name = GetName(containerName, metadata),
+                    ModelMetadata = bindingContext.ModelMetadata,
+                    Name = GetName(containerName, bindingContext),
                     Source = source,
-                    Type = metadata.ModelType,
+                    Type = bindingContext.ModelMetadata.ModelType,
                 };
             }
 
-            private static string GetName(string containerName, ModelMetadata metadata)
+            private static string GetName(string containerName, ApiDescriptorBindingContext metadata)
             {
                 if (!string.IsNullOrEmpty(metadata.BinderModelName))
                 {

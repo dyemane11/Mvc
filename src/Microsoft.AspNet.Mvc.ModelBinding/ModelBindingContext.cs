@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNet.Mvc.ModelBinding.Metadata;
 using Microsoft.Framework.Internal;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding
@@ -48,6 +49,30 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             ModelState = bindingContext.ModelState;
             ValueProvider = bindingContext.ValueProvider;
             OperationBindingContext = bindingContext.OperationBindingContext;
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="ModelBindingContext"/> from given <paramref name="metadata"/>
+        /// and <paramref name="bindingMetadata"/>.
+        /// </summary>
+        /// <param name="metadata"><see cref="ModelMetadata"/> associated with the model.</param>
+        /// <param name="bindingMetadata"><see cref="BindingMetadata"/> associated with the model.</param>
+        /// <param name="modelName">An optional name of the model to be used.</param>
+        /// <returns></returns>
+        public static ModelBindingContext GetModelBindingContext(
+            [NotNull] ModelMetadata metadata,
+            [NotNull] BindingMetadata bindingMetadata,
+            string modelName)
+        {
+            var binderModelName = bindingMetadata.BinderModelName ?? metadata.BinderModelName;
+            return new ModelBindingContext()
+            {
+                ModelMetadata = metadata,
+                BindingSource = bindingMetadata.BindingSource ?? metadata.BindingSource,
+                BinderModelName = binderModelName,
+                ModelName = metadata.PropertyName ?? modelName,
+                FallbackToEmptyPrefix = binderModelName == null,
+            };
         }
 
         /// <summary>
@@ -117,6 +142,18 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 return ModelMetadata.ModelType;
             }
         }
+
+        /// <summary>
+        /// Gets or sets a model name which is explicitly set using an <see cref="IModelNameProvider"/>. 
+        /// <see cref="Model"/>.
+        /// </summary>
+        public string BinderModelName { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value which represents the <see cref="BindingSource"/> associated with the 
+        /// <see cref="Model"/>.
+        /// </summary>
+        public BindingSource BindingSource { get; set; }
 
         /// <summary>
         /// Gets or sets a value that indicates whether the binder should use an empty prefix to look up

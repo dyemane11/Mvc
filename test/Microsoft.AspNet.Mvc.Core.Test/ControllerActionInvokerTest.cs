@@ -12,6 +12,7 @@ using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Core;
 using Microsoft.AspNet.Mvc.Core;
 using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNet.Routing;
 using Microsoft.AspNet.Testing;
 using Microsoft.Framework.DependencyInjection;
@@ -2105,12 +2106,13 @@ namespace Microsoft.AspNet.Mvc
                 new DefaultControllerActionArgumentBinder(
                     metadataProvider,
                     new DefaultObjectValidator(Mock.Of<IValidationExcludeFiltersProvider>(), metadataProvider),
+                    Mock.Of<ICompositeMetadataDetailsProvider>(),
                     new MockMvcOptionsAccessor()),
-                    new MockModelBinderProvider() { ModelBinders = new List<IModelBinder>() { binder.Object } },
-                    new MockModelValidatorProviderProvider(),
-                    new MockValueProviderFactoryProvider(),
-                    new MockScopedInstance<ActionBindingContext>(),
-                    Mock.Of<ITempDataDictionary>());
+                new MockModelBinderProvider() { ModelBinders = new List<IModelBinder>() { binder.Object } },
+                new MockModelValidatorProviderProvider(),
+                new MockValueProviderFactoryProvider(),
+                new MockScopedInstance<ActionBindingContext>(),
+                Mock.Of<ITempDataDictionary>());
 
             // Act
             await invoker.InvokeAsync();
