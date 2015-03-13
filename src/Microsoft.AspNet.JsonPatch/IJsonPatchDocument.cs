@@ -6,8 +6,8 @@ using System.Collections.Generic;
 
 namespace Microsoft.AspNet.JsonPatch
 {
-	public interface IJsonPatchDocument
-	{
-		List<Operation> GetOperations();
-	}
+    public interface IJsonPatchDocument
+    {
+        List<Operation> GetOperations();
+    }
 }

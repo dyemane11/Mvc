@@ -6,24 +6,24 @@
         "Microsoft.AspNet.Mvc": "6.0.0-*"
     },
 
-	"frameworks": {
-		"dnx451": {
-			"dependencies": {
-				"System.Globalization": "4.0.10-beta-22623",
-				"System.Reflection": "4.0.10-beta-22623"
-			}
-		},
-		"dnxcore50": {
-			"dependencies": {
-				"Microsoft.CSharp": "4.0.0-beta-22623",
-				"System.Collections":  "4.0.10-beta-22623",
-				"System.Runtime.Extensions": "4.0.10-beta-22623",
-				"System.Globalization": "4.0.10-beta-22623",
-				"System.Reflection": "4.0.10-beta-22623",
-				"System.Linq": "4.0.0-beta-22623",
-				"System.Reflection.TypeExtensions": "4.0.0-beta-22623"
+    "frameworks": {
+        "dnx451": {
+            "dependencies": {
+                "System.Globalization": "4.0.10-beta-22623",
+                "System.Reflection": "4.0.10-beta-22623"
+            }
+        },
+        "dnxcore50": {
+            "dependencies": {
+                "Microsoft.CSharp": "4.0.0-beta-22623",
+                "System.Collections": "4.0.10-beta-22623",
+                "System.Runtime.Extensions": "4.0.10-beta-22623",
+                "System.Globalization": "4.0.10-beta-22623",
+                "System.Reflection": "4.0.10-beta-22623",
+                "System.Linq": "4.0.0-beta-22623",
+                "System.Reflection.TypeExtensions": "4.0.0-beta-22623"
 
-			}
-		}
-	}
+            }
+        }
+    }
 }
