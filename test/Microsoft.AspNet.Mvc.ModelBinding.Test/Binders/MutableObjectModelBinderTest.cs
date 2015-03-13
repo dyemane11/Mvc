@@ -110,6 +110,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         [Fact]
         public async Task CanCreateModel_ReturnsFalse_ForNonTopLevelModel_IfModelIsMarkedWithBinderMetadata()
         {
+            var modelMetadata = GetMetadataForType(typeof(Document))
+                                        .Properties
+                                        .First(metadata => metadata.PropertyName == nameof(Document.SubDocument));
             var bindingContext = new MutableObjectBinderContext
             {
                 ModelBindingContext = new ModelBindingContext
@@ -121,7 +124,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                     OperationBindingContext = new OperationBindingContext
                     {
                         ValidatorProvider = Mock.Of<IModelValidatorProvider>(),
-                    }
+                    },
+                    BindingSource = modelMetadata.BindingSource,
+                    BinderModelName = modelMetadata.BinderModelName,
                 }
             };
 
@@ -265,12 +270,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
                     return null;
                 });
-
+            
+            var modelMetadata = GetMetadataForType(modelType);
             var bindingContext = new MutableObjectBinderContext
             {
                 ModelBindingContext = new ModelBindingContext
                 {
-                    ModelMetadata = GetMetadataForType(modelType),
+                    ModelMetadata = modelMetadata,
                     ValueProvider = mockValueProvider.Object,
                     OperationBindingContext = new OperationBindingContext
                     {
@@ -280,7 +286,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                     },
 
                     // Setting it to empty ensures that model does not get created becasue of no model name.
-                    ModelName = "dummyName"
+                    ModelName = "dummyName",
+                    BindingSource = modelMetadata.BindingSource,
+                    BinderModelName = modelMetadata.BinderModelName
                 }
             };
 

@@ -49,6 +49,11 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             ModelState = bindingContext.ModelState;
             ValueProvider = bindingContext.ValueProvider;
             OperationBindingContext = bindingContext.OperationBindingContext;
+
+            // TODO: instead of doing this in a constructor consider renaming this to a method like
+            // Get ChildMBC. where it would make more sense.
+            BindingSource = modelMetadata.BindingSource;
+            BinderModelName = modelMetadata.BinderModelName;
         }
 
         /// <summary>
@@ -58,7 +63,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         /// <param name="metadata"><see cref="ModelMetadata"/> associated with the model.</param>
         /// <param name="bindingMetadata"><see cref="BindingMetadata"/> associated with the model.</param>
         /// <param name="modelName">An optional name of the model to be used.</param>
-        /// <returns></returns>
+        /// <returns>A new instance of <see cref="ModelBindingContext"/>.</returns>
         public static ModelBindingContext GetModelBindingContext(
             [NotNull] ModelMetadata metadata,
             [NotNull] BindingMetadata bindingMetadata,
@@ -70,7 +75,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 ModelMetadata = metadata,
                 BindingSource = bindingMetadata.BindingSource ?? metadata.BindingSource,
                 BinderModelName = binderModelName,
-                ModelName = metadata.PropertyName ?? modelName,
+                ModelName = bindingMetadata.BinderModelName ?? metadata.PropertyName ?? modelName,
                 FallbackToEmptyPrefix = binderModelName == null,
             };
         }

@@ -56,6 +56,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 ModelBindingHelper.CreatePropertyModelName(parentBindingContext.ModelName, propertyName);
             var propertyBindingContext =
                 new ModelBindingContext(parentBindingContext, propertyModelName, propertyModelMetadata);
+
+            propertyBindingContext.BinderModelName = propertyModelMetadata.BinderModelName;
+
             var modelBindingResult = 
                 await propertyBindingContext.OperationBindingContext.ModelBinder.BindModelAsync(propertyBindingContext);
             if (modelBindingResult != null)
