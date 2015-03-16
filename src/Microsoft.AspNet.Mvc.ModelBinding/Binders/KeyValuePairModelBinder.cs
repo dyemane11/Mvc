@@ -54,8 +54,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 parentBindingContext.OperationBindingContext.MetadataProvider.GetMetadataForType(typeof(TModel));
             var propertyModelName =
                 ModelBindingHelper.CreatePropertyModelName(parentBindingContext.ModelName, propertyName);
-            var propertyBindingContext =
-                new ModelBindingContext(parentBindingContext, propertyModelName, propertyModelMetadata);
+            var propertyBindingContext = ModelBindingContext.GetChildModelBindingContext(
+                parentBindingContext,
+                propertyModelName,
+                propertyModelMetadata);
 
             propertyBindingContext.BinderModelName = propertyModelMetadata.BinderModelName;
 

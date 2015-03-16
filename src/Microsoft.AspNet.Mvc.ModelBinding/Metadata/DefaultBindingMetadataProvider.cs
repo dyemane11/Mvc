@@ -42,7 +42,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Metadata
             // BindingSource
             foreach (var bindingSourceAttribute in context.Attributes.OfType<IBindingSourceMetadata>())
             {
-                if (bindingSourceAttribute.BindingSource != null)
+                if (bindingSourceAttribute.BindingSource != null && bindingSourceAttribute.BindingSource != BindingSource.ModelBinding)
                 {
                     context.BindingMetadata.BindingSource = bindingSourceAttribute.BindingSource;
                     break;

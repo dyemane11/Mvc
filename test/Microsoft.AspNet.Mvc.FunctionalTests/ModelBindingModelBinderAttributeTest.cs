@@ -18,7 +18,6 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
         [Fact]
         public async Task ModelBinderAttribute_CustomModelPrefix()
         {
-            System.Diagnostics.Debugger.Launch();
             // Arrange
             var server = TestHelper.CreateServer(_app, SiteName);
             var client = server.CreateClient();

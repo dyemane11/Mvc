@@ -8,6 +8,7 @@ using System.Reflection;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc.Description;
 using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNet.Mvc.Routing;
 using Microsoft.Framework.Internal;
 using Microsoft.Framework.OptionsModel;
@@ -329,8 +330,7 @@ namespace Microsoft.AspNet.Mvc.ApplicationModels
             var attributes = parameterInfo.GetCustomAttributes(inherit: true).OfType<object>().ToArray();
             var parameterModel = new ParameterModel(parameterInfo, attributes);
 
-            parameterModel.BinderMetadata = attributes.OfType<IBinderMetadata>().FirstOrDefault();
-            var bindingMetadata = BindingHelper.GetBindingMetadata(attributes);
+            var bindingMetadata = BindingMetadata.GetBindingMetadata(attributes);
             parameterModel.BindingMetadata = bindingMetadata;
 
             parameterModel.ParameterName = parameterInfo.Name;

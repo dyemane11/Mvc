@@ -29,31 +29,29 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModelBindingContext"/> class using the
+        /// Constructs a new instance of the <see cref="ModelBindingContext"/> class using the
         /// <paramref name="bindingContext" />.
         /// </summary>
         /// <param name="bindingContext">Existing <see cref="ModelBindingContext"/>.</param>
         /// <param name="modelName">Model name of associated with the new <see cref="ModelBindingContext"/>.</param>
         /// <param name="modelMetadata">Model metadata of associated with the new <see cref="ModelBindingContext"/>.
         /// </param>
-        /// <remarks>
-        /// This constructor copies certain values that won't change between parent and child objects,
-        /// e.g. ValueProvider, ModelState
-        /// </remarks>
-        public ModelBindingContext([NotNull] ModelBindingContext bindingContext,
-                                   [NotNull] string modelName,
-                                   [NotNull] ModelMetadata modelMetadata)
+        public static ModelBindingContext GetChildModelBindingContext(
+            [NotNull] ModelBindingContext bindingContext,
+            [NotNull] string modelName,
+            [NotNull] ModelMetadata modelMetadata)
         {
-            ModelName = modelName;
-            ModelMetadata = modelMetadata;
-            ModelState = bindingContext.ModelState;
-            ValueProvider = bindingContext.ValueProvider;
-            OperationBindingContext = bindingContext.OperationBindingContext;
+            var modelBindingContext = new ModelBindingContext();
+            modelBindingContext.ModelName = modelName;
+            modelBindingContext.ModelMetadata = modelMetadata;
+            modelBindingContext.ModelState = bindingContext.ModelState;
+            modelBindingContext.ValueProvider = bindingContext.ValueProvider;
+            modelBindingContext.OperationBindingContext = bindingContext.OperationBindingContext;
 
-            // TODO: instead of doing this in a constructor consider renaming this to a method like
-            // Get ChildMBC. where it would make more sense.
-            BindingSource = modelMetadata.BindingSource;
-            BinderModelName = modelMetadata.BinderModelName;
+            modelBindingContext.BindingSource = modelMetadata.BindingSource;
+            modelBindingContext.BinderModelName = modelMetadata.BinderModelName;
+            modelBindingContext.BinderType = modelMetadata.BinderType;
+            return modelBindingContext;
         }
 
         /// <summary>

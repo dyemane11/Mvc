@@ -532,7 +532,6 @@ namespace Microsoft.AspNet.Mvc.Description
         [Fact]
         public void GetApiDescription_ParameterDescription_ModelBoundParameter()
         {
-            System.Diagnostics.Debugger.Launch();
             // Arrange
             var action = CreateActionDescriptor(nameof(AcceptsProduct));
 
@@ -971,10 +970,10 @@ namespace Microsoft.AspNet.Mvc.Description
             {
                 action.Parameters.Add(new ParameterDescriptor()
                 {
-                    BinderMetadata = parameter.GetCustomAttributes().OfType<IBinderMetadata>().FirstOrDefault(),
                     Name = parameter.Name,
                     ParameterType = parameter.ParameterType,
-                    BindingMetadata = BindingHelper.GetBindingMetadata(parameter.GetCustomAttributes().OfType<object>())
+                    BindingMetadata = BindingMetadata
+                    .GetBindingMetadata(parameter.GetCustomAttributes().OfType<object>())
                 });
             }
 

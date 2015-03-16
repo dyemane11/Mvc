@@ -26,9 +26,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                         bindingContext.ModelName,
                         propertyMetadata.BinderModelName ?? propertyMetadata.PropertyName);
 
-                var propertyBindingContext = new ModelBindingContext(bindingContext,
-                                                                     propertyModelName,
-                                                                     propertyMetadata);
+                var propertyBindingContext = ModelBindingContext.GetChildModelBindingContext(
+                    bindingContext,
+                    propertyModelName,
+                    propertyMetadata);
 
                 // bind and propagate the values
                 // If we can't bind then leave the result missing (don't add a null).

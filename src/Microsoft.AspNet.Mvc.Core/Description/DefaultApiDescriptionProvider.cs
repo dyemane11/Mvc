@@ -443,15 +443,16 @@ namespace Microsoft.AspNet.Mvc.Description
                 BindingMetadata bindingMetadata,
                 string propertyName)
             {
+                // BindingMetadata can be null if the metadata represents properties.
                 var propertyPredicateProvider =
-                    bindingMetadata.PropertyBindingPredicateProvider ?? metadata.PropertyBindingPredicateProvider;
+                    bindingMetadata?.PropertyBindingPredicateProvider ?? metadata.PropertyBindingPredicateProvider;
                 return new ApiDescriptorBindingContext
                 {
                     ModelMetadata = metadata,
                     BinderModelName = bindingMetadata?.BinderModelName ?? metadata.BinderModelName,
                     BindingSource = bindingMetadata?.BindingSource ?? metadata.BindingSource,
                     PropertyFilter = propertyPredicateProvider?.PropertyFilter,
-                    BinderType = bindingMetadata.BinderType ?? metadata.BinderType,
+                    BinderType = bindingMetadata?.BinderType ?? metadata.BinderType,
                     PropertyName = propertyName ?? metadata.PropertyName
                 };
             }

@@ -54,7 +54,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         {
             var bindingContext = context.ModelBindingContext;
             var isTopLevelObject = bindingContext.ModelMetadata.ContainerType == null;
-            var hasExplicitAlias = bindingContext.ModelMetadata.BinderModelName != null;
+            var hasExplicitAlias = bindingContext.BinderModelName != null;
 
             // If we get here the model is a complex object which was not directly bound by any previous model binder,
             // so we want to decide if we want to continue binding. This is important to get right to avoid infinite
@@ -147,9 +147,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
                     var propertyModelName = ModelBindingHelper.CreatePropertyModelName(
                      context.ModelBindingContext.ModelName,
-                     context.ModelBindingContext.BinderModelName ?? propertyMetadata.PropertyName);
+                     propertyMetadata.BinderModelName ?? propertyMetadata.PropertyName);
 
-                    var propertyModelBindingContext = new ModelBindingContext(
+                    var propertyModelBindingContext = ModelBindingContext.GetChildModelBindingContext(
                         context.ModelBindingContext,
                         propertyModelName,
                         propertyMetadata);
@@ -254,13 +254,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             var metadataProvider = bindingContext.OperationBindingContext.MetadataProvider;
             var dtoMetadata = metadataProvider.GetMetadataForType(typeof(ComplexModelDto));
 
-            var childContext = new ModelBindingContext(
+            var childContext = ModelBindingContext.GetChildModelBindingContext(
                 bindingContext,
                 bindingContext.ModelName,
-                dtoMetadata)
-            {
-                Model = dto,
-            };
+                dtoMetadata);
+
+            childContext.Model = dto;
 
             return await bindingContext.OperationBindingContext.ModelBinder.BindModelAsync(childContext);
         }

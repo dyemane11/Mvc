@@ -17,26 +17,25 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 foreach (var parameter in action.Parameters)
                 {
-                    if (parameter.BinderMetadata is IBinderMetadata)
+                    if (parameter.BindingMetadata.BindingSource != null)
                     {
                         // This has a binding behavior configured, just leave it alone.
                     }
                     else if (ValueProviderResult.CanConvertFromString(parameter.ParameterInfo.ParameterType))
                     {
                         // Simple types are by-default from the URI.
-                        parameter.BinderMetadata = new FromUriAttribute();
+                        parameter.BindingMetadata.BindingSource = (new FromUriAttribute()).BindingSource;
                     }
                     else
                     {
                         // Complex types are by-default from the body.
-                        parameter.BinderMetadata = new FromBodyAttribute();
+                        parameter.BindingMetadata.BindingSource = (new FromBodyAttribute()).BindingSource;
                     }
 
                     // If the parameter has a default value, we want to consider it as optional parameter by default.
-                    var optionalMetadata = parameter.BinderMetadata as FromUriAttribute;
-                    if (parameter.ParameterInfo.HasDefaultValue && optionalMetadata != null)
+                    if (parameter.ParameterInfo.HasDefaultValue)
                     {
-                        optionalMetadata.IsOptional = true;
+                        parameter.BindingMetadata.IsRequired = false;
                     }
                 }
             }

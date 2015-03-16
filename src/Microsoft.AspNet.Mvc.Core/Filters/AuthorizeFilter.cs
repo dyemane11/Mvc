@@ -32,20 +32,18 @@ namespace Microsoft.AspNet.Mvc
         /// <inheritdoc />
         public virtual async Task OnAuthorizationAsync([NotNull] AuthorizationContext context)
         {
-            // Build a ClaimsPrincipal with the Policy's required authentication types
-            if (Policy.ActiveAuthenticationSchemes != null && Policy.ActiveAuthenticationSchemes.Any())
+            var newPrincipal = new ClaimsPrincipal();
+            foreach (var scheme in Policy.ActiveAuthenticationSchemes)
             {
-                var results = await context.HttpContext.AuthenticateAsync(Policy.ActiveAuthenticationSchemes);
-                if (results != null)
+                var result = (await context.HttpContext.AuthenticateAsync(scheme))?.Principal;
+                if (result != null)
                 {
-                    var newPrincipal = new ClaimsPrincipal();
-                    foreach (var principal in results.Where(r => r.Principal != null).Select(r => r.Principal))
-                    {
-                        newPrincipal.AddIdentities(principal.Identities);
-                    }
-                    context.HttpContext.User = newPrincipal;
+                    newPrincipal.AddIdentities(result.Identities);
                 }
             }
+
+            context.HttpContext.User = newPrincipal;
+
 
             // Allow Anonymous skips all authorization
             if (context.Filters.Any(item => item is IAllowAnonymous))

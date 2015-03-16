@@ -32,11 +32,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                              .Returns(Task.FromResult(false));
 
             var metadataProvider = new TestModelMetadataProvider();
-            if (isPrefixProvided)
-            {
-                metadataProvider.ForType<Person>().BindingDetails(bd => bd.BinderModelName = "prefix");
-            }
-
             var bindingContext = new MutableObjectBinderContext
             {
                 ModelBindingContext = new ModelBindingContext
@@ -53,6 +48,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
                     // Setting it to empty ensures that model does not get created becasue of no model name.
                     ModelName = "dummyModelName",
+                    BinderModelName = isPrefixProvided ? "prefix" : null,
                 }
             };
 

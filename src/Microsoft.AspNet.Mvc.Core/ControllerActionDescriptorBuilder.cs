@@ -276,7 +276,6 @@ namespace Microsoft.AspNet.Mvc
         {
             var parameterDescriptor = new ParameterDescriptor()
             {
-                BinderMetadata = parameter.BinderMetadata,
                 Name = parameter.ParameterName,
                 ParameterType = parameter.ParameterInfo.ParameterType,
                 BindingMetadata = parameter.BindingMetadata

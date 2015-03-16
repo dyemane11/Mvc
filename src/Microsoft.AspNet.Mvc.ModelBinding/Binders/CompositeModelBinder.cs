@@ -118,7 +118,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 OperationBindingContext = oldBindingContext.OperationBindingContext,
                 PropertyFilter = oldBindingContext.PropertyFilter,
                 BinderModelName = oldBindingContext.BinderModelName,
-                BindingSource = oldBindingContext.BindingSource
+                BindingSource = oldBindingContext.BindingSource,
+                BinderType = oldBindingContext.BinderType,
             };
 
             newBindingContext.OperationBindingContext.BodyBindingState = GetBodyBindingState(oldBindingContext);
@@ -142,7 +143,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             //
             // In this example, [FromQuery] overrides the ambient data source (form).
             var bindingSource = oldBindingContext.BindingSource;
-            if (bindingSource != null && !bindingSource.IsGreedy)
+            if (bindingSource != null && bindingSource != BindingSource.ModelBinding && !bindingSource.IsGreedy)
             {
                 var valueProvider =
                     oldBindingContext.OperationBindingContext.ValueProvider as IBindingSourceValueProvider;
