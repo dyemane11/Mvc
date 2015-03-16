@@ -21,6 +21,8 @@ namespace Microsoft.AspNet.JsonPatch
     {
         public List<Operation<T>> Operations { get; private set; }
 
+        public object Model { get; set; }
+
         public JsonPatchDocument()
         {
             Operations = new List<Operation<T>>();

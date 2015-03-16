@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNet.JsonPatch.Exceptions;
 using Microsoft.AspNet.JsonPatch.Operations;
+using Microsoft.AspNet.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

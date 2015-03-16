@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Reflection;
 using Microsoft.AspNet.JsonPatch.Exceptions;
 using Microsoft.AspNet.JsonPatch.Helpers;
 using Microsoft.AspNet.JsonPatch.Operations;
@@ -168,7 +169,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             if (appendList || positionAsInteger > -1)
             {
                 var isNonStringArray = !(propertyMetadata.Property.PropertyType == typeof(string))
-                    && typeof(IList).IsAssignableFrom(propertyMetadata.Property.PropertyType);
+                    && typeof(IList).GetTypeInfo().IsAssignableFrom(propertyMetadata.Property.PropertyType.GetTypeInfo());
 
                 // what if it's an array but there's no position??
                 if (isNonStringArray)
@@ -297,7 +298,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             if (positionAsInteger > -1)
             {
                 var isNonStringArray = !(propertyMetadata.Property.PropertyType == typeof(string))
-                    && typeof(IList).IsAssignableFrom(propertyMetadata.Property.PropertyType);
+                    && typeof(IList).GetTypeInfo().IsAssignableFrom(propertyMetadata.Property.PropertyType.GetTypeInfo());
 
                 if (isNonStringArray)
                 {
@@ -403,7 +404,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             if (removeFromList || positionAsInteger > -1)
             {
                 var isNonStringArray = !(propertyMetadata.Property.PropertyType == typeof(string))
-                    && typeof(IList).IsAssignableFrom(propertyMetadata.Property.PropertyType);
+                    && typeof(IList).GetTypeInfo().IsAssignableFrom(propertyMetadata.Property.PropertyType.GetTypeInfo());
 
                 // what if it's an array but there's no position??
                 if (isNonStringArray)
@@ -450,7 +451,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
                 // null in case of reference types
                 object value = null;
 
-                if (propertyMetadata.Property.PropertyType.IsValueType
+                if (propertyMetadata.Property.PropertyType.GetTypeInfo().IsValueType
                     && Nullable.GetUnderlyingType(propertyMetadata.Property.PropertyType) == null)
                 {
                     value = Activator.CreateInstance(propertyMetadata.Property.PropertyType);
@@ -544,7 +545,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             {
 
                 var isNonStringArray = !(propertyMetadata.Property.PropertyType == typeof(string))
-                    && typeof(IList).IsAssignableFrom(propertyMetadata.Property.PropertyType);
+                    && typeof(IList).GetTypeInfo().IsAssignableFrom(propertyMetadata.Property.PropertyType.GetTypeInfo());
 
                 if (isNonStringArray)
                 {
@@ -680,7 +681,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             if (positionAsInteger > -1)
             {
                 var isNonStringArray = !(propertyMetadata.Property.PropertyType == typeof(string))
-                    && typeof(IList).IsAssignableFrom(propertyMetadata.Property.PropertyType);
+                    && typeof(IList).GetTypeInfo().IsAssignableFrom(propertyMetadata.Property.PropertyType.GetTypeInfo());
 
                 if (isNonStringArray)
                 {

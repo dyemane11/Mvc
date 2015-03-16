@@ -2,9 +2,11 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNet.JsonPatch;
 using Microsoft.Framework.Internal;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.AspNet.Mvc
 {
@@ -86,8 +88,11 @@ namespace Microsoft.AspNet.Mvc
 
                 try
                 {
-                    var contractObject = SerializerSettings.ContractResolver.ResolveContract(type);
-                    return Task.FromResult(jsonSerializer.Deserialize(jsonReader, type));
+                    var deserializedObject = jsonSerializer.Deserialize(jsonReader, type) as IJsonPatchDocument;
+                    deserializedObject.Model = (JsonObjectContract)jsonSerializer.ContractResolver
+                        .ResolveContract(deserializedObject.Model.GetType());
+
+                    return Task.FromResult((object)deserializedObject);
                 }
                 finally
                 {
