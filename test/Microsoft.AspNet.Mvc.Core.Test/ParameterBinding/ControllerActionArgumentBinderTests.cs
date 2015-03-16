@@ -63,6 +63,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(object),
+                        BindingMetadata = new BindingMetadata(),
                     }
                 }
             };
@@ -114,6 +115,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(object),
+                        BindingMetadata = new BindingMetadata(),
                     }
                 }
             };
@@ -166,6 +168,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(string),
+                        BindingMetadata = new BindingMetadata(),
                     }
                 },
             };
@@ -223,6 +226,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(object),
+                        BindingMetadata = new BindingMetadata(),
                     }
                 }
             };
@@ -277,6 +281,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(object),
+                        BindingMetadata = new BindingMetadata(),
                     }
                 }
             };
@@ -326,6 +331,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(object),
+                        BindingMetadata = new BindingMetadata(),
                     }
                 }
             };

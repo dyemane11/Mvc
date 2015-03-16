@@ -2074,6 +2074,7 @@ namespace Microsoft.AspNet.Mvc
                     {
                         Name = "value",
                         ParameterType = typeof(int),
+                        BindingMetadata = new BindingMetadata(),
                     }
                 },
                 FilterDescriptors = new List<FilterDescriptor>()

@@ -70,10 +70,14 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             string modelName)
         {
             var binderModelName = bindingMetadata.BinderModelName ?? metadata.BinderModelName;
+            var propertyPredicateProvider = 
+                bindingMetadata.PropertyBindingPredicateProvider ?? metadata.PropertyBindingPredicateProvider;
             return new ModelBindingContext()
             {
                 ModelMetadata = metadata,
                 BindingSource = bindingMetadata.BindingSource ?? metadata.BindingSource,
+                PropertyFilter = propertyPredicateProvider?.PropertyFilter,
+                BinderType = bindingMetadata.BinderType ?? metadata.BinderType,
                 BinderModelName = binderModelName,
                 ModelName = bindingMetadata.BinderModelName ?? metadata.PropertyName ?? modelName,
                 FallbackToEmptyPrefix = binderModelName == null,
@@ -159,6 +163,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         /// <see cref="Model"/>.
         /// </summary>
         public BindingSource BindingSource { get; set; }
+
+        public Type BinderType { get; set; }
 
         /// <summary>
         /// Gets or sets a value that indicates whether the binder should use an empty prefix to look up

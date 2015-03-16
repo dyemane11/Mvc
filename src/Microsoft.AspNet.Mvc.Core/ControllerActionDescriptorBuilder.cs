@@ -279,6 +279,7 @@ namespace Microsoft.AspNet.Mvc
                 BinderMetadata = parameter.BinderMetadata,
                 Name = parameter.ParameterName,
                 ParameterType = parameter.ParameterInfo.ParameterType,
+                BindingMetadata = parameter.BindingMetadata
             };
 
             return parameterDescriptor;

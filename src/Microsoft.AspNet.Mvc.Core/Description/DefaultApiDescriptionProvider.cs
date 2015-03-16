@@ -142,22 +142,9 @@ namespace Microsoft.AspNet.Mvc.Description
                     var visitor = new PseudoModelBindingVisitor(context, actionParameter);
                     var metadata = _modelMetadataProvider.GetMetadataForType(actionParameter.ParameterType);
 
-                    var parameterInfo = context.ActionDescriptor.MethodInfo.GetParameters()
-                        .Where(p => p.Name == actionParameter.Name)
-                        .Single();
-
-                    var allAttributes = new List<object>();
-                    allAttributes.Add(actionParameter.BinderMetadata);
-                    allAttributes.AddRange(parameterInfo.GetCustomAttributes());
-
-                    var bindingMetadataProviderContext = new BindingMetadataProviderContext(
-                        ModelMetadataIdentity.ForParameter(parameterInfo),
-                        allAttributes);
-                    _compositeMetadataDetailsProvider.GetBindingMetadata(bindingMetadataProviderContext);
-
                     var bindingContext = ApiDescriptorBindingContext.GetContext(
                         metadata,
-                        bindingMetadataProviderContext.BindingMetadata,
+                        actionParameter.BindingMetadata,
                         propertyName: actionParameter.Name);
                     visitor.WalkParameter(bindingContext);
                 }
@@ -445,6 +432,10 @@ namespace Microsoft.AspNet.Mvc.Description
 
             public BindingSource BindingSource { get; set; }
 
+            public Func<ModelBindingContext, string, bool> PropertyFilter { get; set; }
+
+            public Type BinderType { get; set; }
+
             public string PropertyName { get; set; }
 
             public static ApiDescriptorBindingContext GetContext(
@@ -452,11 +443,15 @@ namespace Microsoft.AspNet.Mvc.Description
                 BindingMetadata bindingMetadata,
                 string propertyName)
             {
+                var propertyPredicateProvider =
+                    bindingMetadata.PropertyBindingPredicateProvider ?? metadata.PropertyBindingPredicateProvider;
                 return new ApiDescriptorBindingContext
                 {
                     ModelMetadata = metadata,
                     BinderModelName = bindingMetadata?.BinderModelName ?? metadata.BinderModelName,
                     BindingSource = bindingMetadata?.BindingSource ?? metadata.BindingSource,
+                    PropertyFilter = propertyPredicateProvider?.PropertyFilter,
+                    BinderType = bindingMetadata.BinderType ?? metadata.BinderType,
                     PropertyName = propertyName ?? metadata.PropertyName
                 };
             }

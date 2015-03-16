@@ -1,10 +1,12 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Mvc.ModelBinding.Metadata;
 using Microsoft.Framework.Internal;
 
 namespace Microsoft.AspNet.Mvc.ApplicationModels
@@ -38,5 +40,7 @@ namespace Microsoft.AspNet.Mvc.ApplicationModels
         public ParameterInfo ParameterInfo { get; private set; }
 
         public string ParameterName { get; set; }
+
+        public BindingMetadata BindingMetadata { get; set; }
     }
 }
