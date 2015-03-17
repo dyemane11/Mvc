@@ -146,8 +146,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                     isAnyPropertyEnabledForValueProviderBasedBinding = true;
 
                     var propertyModelName = ModelBindingHelper.CreatePropertyModelName(
-                     context.ModelBindingContext.ModelName,
-                     propertyMetadata.BinderModelName ?? propertyMetadata.PropertyName);
+                        context.ModelBindingContext.ModelName,
+                        propertyMetadata.BinderModelName ?? propertyMetadata.PropertyName);
 
                     var propertyModelBindingContext = ModelBindingContext.GetChildModelBindingContext(
                         context.ModelBindingContext,

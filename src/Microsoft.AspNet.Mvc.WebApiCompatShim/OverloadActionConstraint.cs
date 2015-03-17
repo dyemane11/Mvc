@@ -101,13 +101,17 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                     source.CanAcceptDataFrom(BindingSource.Query)) &&
                     ValueProviderResult.CanConvertFromString(parameter.ParameterType))
                 {
-                    var isOptional = parameter.BindingInfo.IsOptional;
-                    if (isOptional != null && isOptional.Value)
+                    object optionalParameters;
+                    if (candidate.Action.Properties.TryGetValue("OptionalParameters", out optionalParameters))
                     {
-                        // Optional parameters are ignored in overloading. If a parameter doesn't specify that it's
-                        // required then treat it as optional (MVC default). WebAPI parameters will all by-default
-                        // specify themselves as required unless they have a default value.
-                        continue;
+                        var isOptional = ((HashSet<string>)optionalParameters).Contains(parameter.Name);
+                        if (isOptional)
+                        {
+                            // Optional parameters are ignored in overloading. If a parameter doesn't specify that it's
+                            // required then treat it as optional (MVC default). WebAPI parameters will all by-default
+                            // specify themselves as required unless they have a default value.
+                            continue;
+                        }
                     }
 
                     var prefix = parameter.BindingInfo.BinderModelName ?? parameter.Name;

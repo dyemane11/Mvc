@@ -56,28 +56,28 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
         /// <summary>
         /// Constructs a new instance of <see cref="ModelBindingContext"/> from given <paramref name="metadata"/>
-        /// and <paramref name="bindingMetadata"/>.
+        /// and <paramref name="bindingInfo"/>.
         /// </summary>
         /// <param name="metadata"><see cref="ModelMetadata"/> associated with the model.</param>
-        /// <param name="bindingMetadata"><see cref="BindingMetadata"/> associated with the model.</param>
+        /// <param name="bindingInfo"><see cref="BindingInfo"/> associated with the model.</param>
         /// <param name="modelName">An optional name of the model to be used.</param>
         /// <returns>A new instance of <see cref="ModelBindingContext"/>.</returns>
         public static ModelBindingContext GetModelBindingContext(
             [NotNull] ModelMetadata metadata,
-            [NotNull] BindingMetadata bindingMetadata,
+            [NotNull] BindingInfo bindingInfo,
             string modelName)
         {
-            var binderModelName = bindingMetadata.BinderModelName ?? metadata.BinderModelName;
+            var binderModelName = bindingInfo.BinderModelName ?? metadata.BinderModelName;
             var propertyPredicateProvider = 
-                bindingMetadata.PropertyBindingPredicateProvider ?? metadata.PropertyBindingPredicateProvider;
+                bindingInfo.PropertyBindingPredicateProvider ?? metadata.PropertyBindingPredicateProvider;
             return new ModelBindingContext()
             {
                 ModelMetadata = metadata,
-                BindingSource = bindingMetadata.BindingSource ?? metadata.BindingSource,
+                BindingSource = bindingInfo.BindingSource ?? metadata.BindingSource,
                 PropertyFilter = propertyPredicateProvider?.PropertyFilter,
-                BinderType = bindingMetadata.BinderType ?? metadata.BinderType,
+                BinderType = bindingInfo.BinderType ?? metadata.BinderType,
                 BinderModelName = binderModelName,
-                ModelName = bindingMetadata.BinderModelName ?? metadata.PropertyName ?? modelName,
+                ModelName = binderModelName ?? metadata.PropertyName ?? modelName,
                 FallbackToEmptyPrefix = binderModelName == null,
             };
         }

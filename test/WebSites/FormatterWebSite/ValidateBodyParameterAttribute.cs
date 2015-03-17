@@ -15,8 +15,8 @@ namespace FormatterWebSite
             {
                 var bodyParameter = context.ActionDescriptor
                                           .Parameters
-                                          .FirstOrDefault(parameter => 
-                                            IsBodyBindingSource(parameter.BindingInfo.BindingSource));
+                                          .FirstOrDefault(parameter => IsBodyBindingSource(
+                                              parameter.BindingInfo.BindingSource));
                 if (bodyParameter != null)
                 {
                     var parameterBindingErrors = context.ModelState[bodyParameter.Name].Errors;

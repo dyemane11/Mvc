@@ -429,10 +429,6 @@ namespace Microsoft.AspNet.Mvc.Description
 
             public BindingSource BindingSource { get; set; }
 
-            public Func<ModelBindingContext, string, bool> PropertyFilter { get; set; }
-
-            public Type BinderType { get; set; }
-
             public string PropertyName { get; set; }
 
             public static ApiDescriptorBindingContext GetContext(
@@ -448,8 +444,6 @@ namespace Microsoft.AspNet.Mvc.Description
                     ModelMetadata = metadata,
                     BinderModelName = bindingInfo?.BinderModelName ?? metadata.BinderModelName,
                     BindingSource = bindingInfo?.BindingSource ?? metadata.BindingSource,
-                    PropertyFilter = propertyPredicateProvider?.PropertyFilter,
-                    BinderType = bindingInfo?.BinderType ?? metadata.BinderType,
                     PropertyName = propertyName ?? metadata.PropertyName
                 };
             }

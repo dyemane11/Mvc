@@ -28,15 +28,16 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         public Type BinderType { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the action parameter is optional.
-        /// </summary>
-        public bool? IsOptional { get; set; }
-
-        /// <summary>
         /// Gets or sets the <see cref="ModelBinding.IPropertyBindingPredicateProvider"/>.
         /// </summary>
         public IPropertyBindingPredicateProvider PropertyBindingPredicateProvider { get; set; }
 
+        /// <summary>
+        /// Constructs a new instance of <see cref="BindingInfo"/> from the given <paramref name="attributes"/>.
+        /// </summary>
+        /// <param name="attributes">A collection of attributes which are used to construct <see cref="BindingInfo"/>
+        /// </param>
+        /// <returns>A new instance of <see cref="BindingInfo"/>.</returns>
         public static BindingInfo GetBindingInfo(IEnumerable<object> attributes)
         {
             var bindingInfo = new BindingInfo();

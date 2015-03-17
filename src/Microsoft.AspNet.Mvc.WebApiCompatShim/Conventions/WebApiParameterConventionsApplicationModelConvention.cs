@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using Microsoft.AspNet.Mvc.ApplicationModels;
@@ -15,6 +16,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
         {
             if (IsConventionApplicable(action.Controller))
             {
+                var optionalParameters = new HashSet<string>();
                 foreach (var parameter in action.Parameters)
                 {
                     // Some IBindingSourceMetadata attributes like ModelBinder attribute return null 
@@ -38,9 +40,11 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                     // If the parameter has a default value, we want to consider it as optional parameter by default.
                     if (parameter.ParameterInfo.HasDefaultValue)
                     {
-                        parameter.BindingInfo.IsOptional = true;
+                        optionalParameters.Add(parameter.ParameterName);
                     }
                 }
+
+                action.Properties.Add("OptionalParameters", optionalParameters);
             }
         }
 

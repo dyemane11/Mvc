@@ -56,8 +56,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                     elementMetadata);
                 innerBindingContext.ValueProvider = new CompositeValueProvider
                 {
-                // our temporary provider goes at the front of the list
-                new ElementalValueProvider(bindingContext.ModelName, rawValueElement, culture),
+                    // our temporary provider goes at the front of the list
+                    new ElementalValueProvider(bindingContext.ModelName, rawValueElement, culture),
                     bindingContext.ValueProvider
                 };
 

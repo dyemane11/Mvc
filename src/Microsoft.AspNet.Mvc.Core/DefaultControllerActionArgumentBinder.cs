@@ -47,15 +47,15 @@ namespace Microsoft.AspNet.Mvc
             }
 
             var actionArguments = new Dictionary<string, object>(StringComparer.Ordinal);
-            await PopulateArgumentAsync(
+            await PopulateArgumentsAsync(
                 actionContext,
                 actionBindingContext,
                 actionArguments,
                 actionDescriptor.Parameters);
             return actionArguments;
-        }
+        }   
 
-        private async Task PopulateArgumentAsync(
+        private async Task PopulateArgumentsAsync(
             ActionContext actionContext,
             ActionBindingContext bindingContext,
             IDictionary<string, object> arguments,
@@ -105,13 +105,13 @@ namespace Microsoft.AspNet.Mvc
         private static ModelBindingContext GetModelBindingContext(
             string parameterName,
             ModelMetadata metadata,
-            BindingMetadata bindingMetadata,
+            BindingInfo bindingInfo,
             ModelStateDictionary modelState,
             OperationBindingContext operationBindingContext)
         {
             var modelBindingContext = ModelBindingContext.GetModelBindingContext(
                 metadata,
-                bindingMetadata,
+                bindingInfo,
                 parameterName);
 
             modelBindingContext.ModelState = modelState;
