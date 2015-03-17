@@ -143,7 +143,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             //
             // In this example, [FromQuery] overrides the ambient data source (form).
             var bindingSource = oldBindingContext.BindingSource;
-            if (bindingSource != null && bindingSource != BindingSource.ModelBinding && !bindingSource.IsGreedy)
+            if (bindingSource != null && !bindingSource.IsGreedy)
             {
                 var valueProvider =
                     oldBindingContext.OperationBindingContext.ValueProvider as IBindingSourceValueProvider;

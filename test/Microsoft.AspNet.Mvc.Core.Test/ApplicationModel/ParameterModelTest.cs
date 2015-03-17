@@ -19,7 +19,7 @@ namespace Microsoft.AspNet.Mvc.ApplicationModels
                                                new List<object>() { new FromBodyAttribute() });
 
             parameter.Action = new ActionModel(typeof(TestController).GetMethod("Edit"), new List<object>());
-            parameter.BindingMetadata = new BindingMetadata()
+            parameter.BindingInfo = new BindingMetadata()
             {
                 BindingSource = (new FromBodyAttribute()).BindingSource
             };

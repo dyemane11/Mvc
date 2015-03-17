@@ -13,6 +13,6 @@ namespace Microsoft.AspNet.Mvc
 
         public Type ParameterType { get; set; }
 
-        public BindingMetadata BindingMetadata { get; set; }
+        public BindingInfo BindingInfo { get; set; }
     }
 }

@@ -65,10 +65,6 @@ namespace Microsoft.AspNet.Mvc
                 {
                     return BindingSource.Custom;
                 }
-                else if (_bindingSource == null)
-                {
-                    return BindingSource.ModelBinding;
-                }
 
                 return _bindingSource;
             }

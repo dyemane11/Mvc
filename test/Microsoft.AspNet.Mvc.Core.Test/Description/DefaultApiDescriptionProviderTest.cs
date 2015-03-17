@@ -924,12 +924,7 @@ namespace Microsoft.AspNet.Mvc.Description
             var provider = new DefaultApiDescriptionProvider(
                 formattersProvider.Object,
                 constraintResolver.Object,
-                modelMetadataProvider,
-                new DefaultCompositeMetadataDetailsProvider(new IMetadataDetailsProvider[]
-                {
-                    new DataAnnotationsMetadataDetailsProvider(),
-                    new DefaultBindingMetadataProvider()
-                }));
+                modelMetadataProvider);
 
             provider.OnProvidersExecuting(context);
             provider.OnProvidersExecuted(context);
@@ -972,8 +967,8 @@ namespace Microsoft.AspNet.Mvc.Description
                 {
                     Name = parameter.Name,
                     ParameterType = parameter.ParameterType,
-                    BindingMetadata = BindingMetadata
-                    .GetBindingMetadata(parameter.GetCustomAttributes().OfType<object>())
+                    BindingInfo = BindingInfo
+                    .GetBindingInfo(parameter.GetCustomAttributes().OfType<object>())
                 });
             }
 

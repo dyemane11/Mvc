@@ -330,8 +330,8 @@ namespace Microsoft.AspNet.Mvc.ApplicationModels
             var attributes = parameterInfo.GetCustomAttributes(inherit: true).OfType<object>().ToArray();
             var parameterModel = new ParameterModel(parameterInfo, attributes);
 
-            var bindingMetadata = BindingMetadata.GetBindingMetadata(attributes);
-            parameterModel.BindingMetadata = bindingMetadata;
+            var bindingInfo = BindingInfo.GetBindingInfo(attributes);
+            parameterModel.BindingInfo = bindingInfo;
 
             parameterModel.ParameterName = parameterInfo.Name;
 

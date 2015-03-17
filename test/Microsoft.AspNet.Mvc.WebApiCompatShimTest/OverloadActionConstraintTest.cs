@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Web.Http;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Core;
+using Microsoft.AspNet.Mvc.ModelBinding;
 using Microsoft.AspNet.Routing;
 using Xunit;
 
@@ -21,7 +22,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -54,7 +55,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -63,7 +64,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -96,7 +97,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -105,7 +106,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -138,7 +139,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -147,7 +148,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -180,7 +181,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -189,7 +190,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                       IsRequired = false,
@@ -223,7 +224,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -232,7 +233,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -246,7 +247,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -255,7 +256,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -292,7 +293,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -306,7 +307,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -315,7 +316,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -349,7 +350,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -358,7 +359,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                       IsRequired = false,
@@ -373,7 +374,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -382,7 +383,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -416,7 +417,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -425,7 +426,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -439,7 +440,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -448,7 +449,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -485,7 +486,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -499,7 +500,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -508,7 +509,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                       IsRequired = false,
@@ -543,7 +544,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -557,7 +558,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             {
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromUriAttribute()).BindingSource,
                     },
@@ -566,7 +567,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                 },
                 new ParameterDescriptor()
                 {
-                    BindingMetadata = new ModelBinding.Metadata.BindingMetadata()
+                    BindingInfo = new BindingInfo()
                     {
                       BindingSource = (new FromBodyAttribute()).BindingSource,
                     },

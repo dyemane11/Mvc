@@ -2074,7 +2074,7 @@ namespace Microsoft.AspNet.Mvc
                     {
                         Name = "value",
                         ParameterType = typeof(int),
-                        BindingMetadata = new BindingMetadata(),
+                        BindingInfo = new BindingInfo(),
                     }
                 },
                 FilterDescriptors = new List<FilterDescriptor>()
@@ -2107,7 +2107,6 @@ namespace Microsoft.AspNet.Mvc
                 new DefaultControllerActionArgumentBinder(
                     metadataProvider,
                     new DefaultObjectValidator(Mock.Of<IValidationExcludeFiltersProvider>(), metadataProvider),
-                    Mock.Of<ICompositeMetadataDetailsProvider>(),
                     new MockMvcOptionsAccessor()),
                 new MockModelBinderProvider() { ModelBinders = new List<IModelBinder>() { binder.Object } },
                 new MockModelValidatorProviderProvider(),

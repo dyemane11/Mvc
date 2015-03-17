@@ -629,12 +629,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Metadata
         {
         }
 
-        public class TypeBasedBinderAttribute : Attribute, IBinderMetadata, IModelNameProvider
+        public class TypeBasedBinderAttribute : Attribute, IModelNameProvider
         {
             public string Name { get; set; }
         }
 
-        public class NonTypeBasedBinderAttribute : Attribute, IBinderMetadata, IModelNameProvider
+        public class NonTypeBasedBinderAttribute : Attribute, IModelNameProvider
         {
             public string Name { get; set; }
         }

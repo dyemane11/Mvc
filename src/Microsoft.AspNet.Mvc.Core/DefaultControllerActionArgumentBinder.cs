@@ -22,18 +22,15 @@ namespace Microsoft.AspNet.Mvc
         private readonly IModelMetadataProvider _modelMetadataProvider;
         private readonly MvcOptions _options;
         private readonly IObjectModelValidator _validator;
-        private readonly ICompositeMetadataDetailsProvider _compositeDetailsProvider;
 
         public DefaultControllerActionArgumentBinder(
             IModelMetadataProvider modelMetadataProvider,
             IObjectModelValidator validator,
-            ICompositeMetadataDetailsProvider compositeDetailsProvider,
             IOptions<MvcOptions> optionsAccessor)
         {
             _modelMetadataProvider = modelMetadataProvider;
             _options = optionsAccessor.Options;
             _validator = validator;
-            _compositeDetailsProvider = compositeDetailsProvider;
         }
 
         public async Task<IDictionary<string, object>> GetActionArgumentsAsync(
@@ -82,7 +79,7 @@ namespace Microsoft.AspNet.Mvc
                 var modelBindingContext = GetModelBindingContext(
                     parameter.Name,
                     metadata,
-                    parameter.BindingMetadata,
+                    parameter.BindingInfo,
                     modelState,
                     operationBindingContext);
 

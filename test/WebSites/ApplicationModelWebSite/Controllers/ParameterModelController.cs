@@ -16,15 +16,15 @@ namespace ApplicationModelWebSite
     {
         public string GetParameterMetadata([Cool] int? id)
         {
-            return ActionContext.ActionDescriptor.Parameters[0].BindingMetadata.BinderModelName;
+            return ActionContext.ActionDescriptor.Parameters[0].BindingInfo.BinderModelName;
         }
 
         private class CoolAttribute : Attribute, IParameterModelConvention
         {
             public void Apply(ParameterModel model)
             {
-                model.BindingMetadata.BindingSource = BindingSource.Custom;
-                model.BindingMetadata.BinderModelName = "CoolMetadata";
+                model.BindingInfo.BindingSource = BindingSource.Custom;
+                model.BindingInfo.BinderModelName = "CoolMetadata";
             }
         }
     }

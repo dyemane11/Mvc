@@ -63,7 +63,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(object),
-                        BindingMetadata = new BindingMetadata(),
+                        BindingInfo = new BindingInfo(),
                     }
                 }
             };
@@ -91,7 +91,6 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 modelMetadataProvider,
                 new DefaultObjectValidator(Mock.Of<IValidationExcludeFiltersProvider>(), modelMetadataProvider),
-                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 new MockMvcOptionsAccessor());
 
             // Act
@@ -115,7 +114,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(object),
-                        BindingMetadata = new BindingMetadata(),
+                        BindingInfo = new BindingInfo(),
                     }
                 }
             };
@@ -144,7 +143,6 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 modelMetadataProvider,
                 new DefaultObjectValidator(Mock.Of<IValidationExcludeFiltersProvider>(), modelMetadataProvider),
-                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 new MockMvcOptionsAccessor());
 
             // Act
@@ -168,7 +166,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(string),
-                        BindingMetadata = new BindingMetadata(),
+                        BindingInfo = new BindingInfo(),
                     }
                 },
             };
@@ -201,7 +199,6 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 metadataProvider,
                 mockValidatorProvider.Object,
-                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 new MockMvcOptionsAccessor());
 
             // Act
@@ -226,7 +223,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(object),
-                        BindingMetadata = new BindingMetadata(),
+                        BindingInfo = new BindingInfo(),
                     }
                 }
             };
@@ -256,7 +253,6 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 TestModelMetadataProvider.CreateDefaultProvider(),
                 mockValidatorProvider.Object,
-                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 new MockMvcOptionsAccessor());
 
             // Act
@@ -281,7 +277,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(object),
-                        BindingMetadata = new BindingMetadata(),
+                        BindingInfo = new BindingInfo(),
                     }
                 }
             };
@@ -307,7 +303,6 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 TestModelMetadataProvider.CreateDefaultProvider(),
                 mockValidatorProvider.Object,
-                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 new MockMvcOptionsAccessor());
 
             // Act
@@ -331,7 +326,7 @@ namespace Microsoft.AspNet.Mvc.Core.Test
                     {
                         Name = "foo",
                         ParameterType = typeof(object),
-                        BindingMetadata = new BindingMetadata(),
+                        BindingInfo = new BindingInfo(),
                     }
                 }
             };
@@ -364,7 +359,6 @@ namespace Microsoft.AspNet.Mvc.Core.Test
             var invoker = new DefaultControllerActionArgumentBinder(
                 TestModelMetadataProvider.CreateDefaultProvider(),
                 mockValidatorProvider.Object,
-                Mock.Of<ICompositeMetadataDetailsProvider>(),
                 options);
 
             // Act

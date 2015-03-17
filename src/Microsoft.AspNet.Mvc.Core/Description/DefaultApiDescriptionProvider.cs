@@ -24,7 +24,6 @@ namespace Microsoft.AspNet.Mvc.Description
         private readonly IOutputFormattersProvider _formattersProvider;
         private readonly IModelMetadataProvider _modelMetadataProvider;
         private readonly IInlineConstraintResolver _constraintResolver;
-        private readonly ICompositeMetadataDetailsProvider _compositeMetadataDetailsProvider;
 
         /// <summary>
         /// Creates a new instance of <see cref="DefaultApiDescriptionProvider"/>.
@@ -34,13 +33,11 @@ namespace Microsoft.AspNet.Mvc.Description
         public DefaultApiDescriptionProvider(
             IOutputFormattersProvider formattersProvider,
             IInlineConstraintResolver constraintResolver,
-            IModelMetadataProvider modelMetadataProvider,
-            ICompositeMetadataDetailsProvider compositeMetadataDetailsProvider)
+            IModelMetadataProvider modelMetadataProvider)
         {
             _formattersProvider = formattersProvider;
             _constraintResolver = constraintResolver;
             _modelMetadataProvider = modelMetadataProvider;
-            _compositeMetadataDetailsProvider = compositeMetadataDetailsProvider;
         }
 
         /// <inheritdoc />
@@ -144,7 +141,7 @@ namespace Microsoft.AspNet.Mvc.Description
 
                     var bindingContext = ApiDescriptorBindingContext.GetContext(
                         metadata,
-                        actionParameter.BindingMetadata,
+                        actionParameter.BindingInfo,
                         propertyName: actionParameter.Name);
                     visitor.WalkParameter(bindingContext);
                 }
@@ -440,19 +437,19 @@ namespace Microsoft.AspNet.Mvc.Description
 
             public static ApiDescriptorBindingContext GetContext(
                 ModelMetadata metadata,
-                BindingMetadata bindingMetadata,
+                BindingInfo bindingInfo,
                 string propertyName)
             {
                 // BindingMetadata can be null if the metadata represents properties.
                 var propertyPredicateProvider =
-                    bindingMetadata?.PropertyBindingPredicateProvider ?? metadata.PropertyBindingPredicateProvider;
+                    bindingInfo?.PropertyBindingPredicateProvider ?? metadata.PropertyBindingPredicateProvider;
                 return new ApiDescriptorBindingContext
                 {
                     ModelMetadata = metadata,
-                    BinderModelName = bindingMetadata?.BinderModelName ?? metadata.BinderModelName,
-                    BindingSource = bindingMetadata?.BindingSource ?? metadata.BindingSource,
+                    BinderModelName = bindingInfo?.BinderModelName ?? metadata.BinderModelName,
+                    BindingSource = bindingInfo?.BindingSource ?? metadata.BindingSource,
                     PropertyFilter = propertyPredicateProvider?.PropertyFilter,
-                    BinderType = bindingMetadata?.BinderType ?? metadata.BinderType,
+                    BinderType = bindingInfo?.BinderType ?? metadata.BinderType,
                     PropertyName = propertyName ?? metadata.PropertyName
                 };
             }

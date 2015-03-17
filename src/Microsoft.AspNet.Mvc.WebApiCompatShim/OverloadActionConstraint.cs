@@ -91,7 +91,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
             foreach (var parameter in candidate.Action.Parameters)
             {
                 // We only consider parameters that are marked as bound from the URL.
-                var source = parameter.BindingMetadata.BindingSource;
+                var source = parameter.BindingInfo.BindingSource;
                 if (source == null)
                 {
                     continue;
@@ -101,8 +101,8 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                     source.CanAcceptDataFrom(BindingSource.Query)) &&
                     ValueProviderResult.CanConvertFromString(parameter.ParameterType))
                 {
-                    var isRequired = parameter.BindingMetadata.IsRequired;
-                    if (isRequired != null && !isRequired.Value)
+                    var isOptional = parameter.BindingInfo.IsOptional;
+                    if (isOptional != null && isOptional.Value)
                     {
                         // Optional parameters are ignored in overloading. If a parameter doesn't specify that it's
                         // required then treat it as optional (MVC default). WebAPI parameters will all by-default
@@ -110,7 +110,7 @@ namespace Microsoft.AspNet.Mvc.WebApiCompatShim
                         continue;
                     }
 
-                    var prefix = parameter.BindingMetadata.BinderModelName ?? parameter.Name;
+                    var prefix = parameter.BindingInfo.BinderModelName ?? parameter.Name;
 
                     parameters.Add(new OverloadedParameter()
                     {

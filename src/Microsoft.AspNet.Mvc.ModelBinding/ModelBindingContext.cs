@@ -162,6 +162,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
         /// </summary>
         public BindingSource BindingSource { get; set; }
 
+        /// <summary>
+        /// Gets the <see cref="Type"/> of an <see cref="IModelBinder"/> associated with the 
+        /// <see cref="Model"/>.
+        /// </summary>
         public Type BinderType { get; set; }
 
         /// <summary>

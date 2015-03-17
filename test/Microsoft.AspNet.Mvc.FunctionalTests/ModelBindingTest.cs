@@ -912,7 +912,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
         }
 
         [Fact]
-        public async Task BindAttribute_FallsBackOnEmptyPrefixIfNoParameterPrefixIsProvided()
+        public async Task BindAttribute_FallsBackOnTypePrefixIfNoParameterPrefixIsProvided()
         {
             // Arrange
             var server = TestHelper.CreateServer(_app, SiteName);
@@ -920,8 +920,8 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 
             // Act
             var response = await client.GetStringAsync("http://localhost/BindAttribute/" +
-                "TypePrefixIsNeverUsed" +
-                "?Value=someValue");
+                "TypePrefixIsUsed" +
+                "?TypePrefix.Value=someValue");
 
             // Assert
             Assert.Equal("someValue", response);

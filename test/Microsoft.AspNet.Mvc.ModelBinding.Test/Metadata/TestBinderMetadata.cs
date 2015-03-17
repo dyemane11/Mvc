@@ -3,7 +3,7 @@
 
 namespace Microsoft.AspNet.Mvc.ModelBinding
 {
-    public class TestBinderMetadata : IBinderMetadata
+    public class TestBinderMetadata
     {
     }
 }
