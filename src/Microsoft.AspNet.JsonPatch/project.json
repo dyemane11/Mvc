@@ -6,26 +6,16 @@
         "Microsoft.Framework.NotNullAttribute.Internal": { "version": "1.0.0-*", "type": "build" },
         "Microsoft.Framework.PropertyHelper.Internal": { "version": "1.0.0-*", "type": "build" },
         "Newtonsoft.Json": "6.0.6"
-        //"Microsoft.AspNet.Mvc": "6.0.0-*"
     },
     "frameworks": {
-        "dnx451": {
-            "dependencies": {
-                //"System.Globalization": "4.0.10-beta-*",
-                //"System.Reflection": "4.0.10-beta-*"
-            }
-        },
+        "dnx451": { },
         "dnxcore50": {
             "dependencies": {
                 "Microsoft.CSharp": "4.0.0-beta-*",
-                // "Newtonsoft.Json": "6.0.6",
                 "System.Collections": "4.0.10-beta-*",
                 "System.Collections.Concurrent": "4.0.10-beta-*",
                 "System.Runtime.Extensions": "4.0.10-beta-*",
-                "System.Globalization": "4.0.10-beta-*",
-               // "System.Reflection": "4.0.10-beta-*",
-                //"System.Linq": "4.0.0-beta-*",
-                //"System.Reflection.TypeExtensions": "4.0.0-beta-*"
+                "System.Globalization": "4.0.10-beta-*"
             }
         }
     }
