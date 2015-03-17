@@ -8,7 +8,6 @@ namespace Microsoft.AspNet.JsonPatch
 {
     public interface IJsonPatchDocument
     {
-        object Model { get; set; }
         List<Operation> GetOperations();
     }
 }

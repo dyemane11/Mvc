@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNet.JsonPatch.Exceptions;
 using Microsoft.AspNet.JsonPatch.Operations;
-using Microsoft.AspNet.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.AspNet.JsonPatch.Converters
 {
@@ -52,8 +52,8 @@ namespace Microsoft.AspNet.JsonPatch.Converters
                 // Populate the object properties
                 serializer.Populate(jObjectReader, targetOperations);
 
-                // container target: the typed JsonPatchDocument. 
-                var container = Activator.CreateInstance(objectType, targetOperations);
+                // container target: the typed JsonPatchDocument.
+                var container = Activator.CreateInstance(objectType, targetOperations, new DefaultContractResolver());
 
                 return container;
             }

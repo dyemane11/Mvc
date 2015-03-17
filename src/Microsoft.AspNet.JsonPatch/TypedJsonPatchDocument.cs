@@ -9,6 +9,7 @@ using Microsoft.AspNet.JsonPatch.Converters;
 using Microsoft.AspNet.JsonPatch.Helpers;
 using Microsoft.AspNet.JsonPatch.Operations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.AspNet.JsonPatch
 {
@@ -21,17 +22,20 @@ namespace Microsoft.AspNet.JsonPatch
     {
         public List<Operation<T>> Operations { get; private set; }
 
-        public object Model { get; set; }
+        [JsonIgnore]
+        public IContractResolver ContractResolver { get; set; }
 
         public JsonPatchDocument()
         {
             Operations = new List<Operation<T>>();
+            ContractResolver = new DefaultContractResolver();
         }
 
         // Create from list of operations  
-        public JsonPatchDocument(List<Operation<T>> operations)
+        public JsonPatchDocument(List<Operation<T>> operations, IContractResolver contractResolver)
         {
             Operations = operations;
+            ContractResolver = contractResolver;
         }
 
         /// <summary>
@@ -350,7 +354,7 @@ namespace Microsoft.AspNet.JsonPatch
 
         public void ApplyTo(T objectToApplyTo)
         {
-            ApplyTo(objectToApplyTo, new SimpleObjectAdapter<T>(contractResolver: null));
+            ApplyTo(objectToApplyTo, new SimpleObjectAdapter<T>(ContractResolver));
         }
 
         public void ApplyTo(T objectToApplyTo, IObjectAdapter<T> adapter)

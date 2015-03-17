@@ -14,69 +14,36 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
 {
     public class SimpleObjectAdapter<T> : IObjectAdapter<T> where T : class
     {
-        private JsonSerializerSettings _jsonSerializerSettings;
-        private JsonObjectContract jsonContract;
+        public IContractResolver ContractResolver { get; set; }
 
         public SimpleObjectAdapter(IContractResolver contractResolver)
         {
-            _jsonSerializerSettings = new JsonSerializerSettings
-            {
-                MissingMemberHandling = MissingMemberHandling.Ignore,
-
-                // Limit the object graph we'll consume to a fixed depth. This prevents stackoverflow exceptions
-                // from deserialization errors that might occur from deeply nested objects.
-                MaxDepth = 32,
-
-                // Do not change this setting
-                // Setting this to None prevents Json.NET from loading malicious, unsafe, or security-sensitive types
-                TypeNameHandling = TypeNameHandling.None
-            };
-
-            _jsonSerializerSettings.ContractResolver = (contractResolver != null) ? contractResolver :
-                new DefaultContractResolver();
-
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="JsonSerializerSettings"/> used to configure the <see cref="JsonSerializer"/>.
-        /// </summary>
-        public JsonSerializerSettings SerializerSettings
-        {
-            get { return _jsonSerializerSettings; }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                _jsonSerializerSettings = value;
-            }
+            ContractResolver = contractResolver;
         }
 
         /// <summary>
 		/// The "add" operation performs one of the following functions,
 		/// depending upon what the target location references:
-		/// 
+		///
 		/// o  If the target location specifies an array index, a new value is
 		///    inserted into the array at the specified index.
-		/// 
+		///
 		/// o  If the target location specifies an object member that does not
 		///    already exist, a new member is added to the object.
-		/// 
+		///
 		/// o  If the target location specifies an object member that does exist,
 		///    that member's value is replaced.
-		/// 
+		///
 		/// The operation object MUST contain a "value" member whose content
 		/// specifies the value to be added.
-		/// 
+		///
 		/// For example:
-		/// 
+		///
 		/// { "op": "add", "path": "/a/b/c", "value": [ "foo", "bar" ] }
-		/// 
+		///
 		/// When the operation is applied, the target location MUST reference one
 		/// of:
-		/// 
+		///
 		/// o  The root of the target document - whereupon the specified value
 		///    becomes the entire content of the target document.
 		/// 
@@ -153,7 +120,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             }
 
             var propertyMetadata = PropertyHelpers
-                .FindPropertyAndParent(objectToApplyTo, actualPathToProperty, SerializerSettings);
+                .FindPropertyAndParent(objectToApplyTo, actualPathToProperty, ContractResolver);
 
             // does property at path exist?
             if (propertyMetadata == null)
@@ -283,7 +250,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             }
 
             var propertyMetadata = PropertyHelpers
-                .FindPropertyAndParent(objectToApplyTo, actualFromProperty, SerializerSettings);
+                .FindPropertyAndParent(objectToApplyTo, actualFromProperty, ContractResolver);
 
             // does property at from exist?
             if (propertyMetadata == null)
@@ -388,7 +355,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             }
 
             var propertyMetadata = PropertyHelpers
-                .FindPropertyAndParent(objectToApplyTo, actualPathToProperty, SerializerSettings);
+                .FindPropertyAndParent(objectToApplyTo, actualPathToProperty, ContractResolver);
 
             // does the target location exist?
             if (propertyMetadata == null)
@@ -526,7 +493,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             }
 
             var propertyMetadata = PropertyHelpers
-                .FindPropertyAndParent(objectToApplyTo, actualPathProperty, SerializerSettings);
+                .FindPropertyAndParent(objectToApplyTo, actualPathProperty, ContractResolver);
 
             // does property at path exist?
             if (propertyMetadata == null)
@@ -665,7 +632,7 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             }
 
             var propertyMetadata = PropertyHelpers
-                .FindPropertyAndParent(objectToApplyTo, actualFromProperty, SerializerSettings);
+                .FindPropertyAndParent(objectToApplyTo, actualFromProperty, ContractResolver);
 
             // does property at from exist?
             if (propertyMetadata == null)

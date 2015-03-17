@@ -14,7 +14,7 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
         public static JsonPropertyMetadata FindPropertyAndParent(
             object targetObject,
             string propertyPath,
-            JsonSerializerSettings serializerSettings)
+            IContractResolver contractResolver)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
 
                 for (int i = startIndex; i <= splitPath.Length - 1; i++)
                 {
-                    var jsonContract = GetJsonContract(serializerSettings, targetObject.GetType());
+                    var jsonContract = (JsonObjectContract)contractResolver.ResolveContract(targetObject.GetType());
 
                     foreach (var property in jsonContract.Properties)
                     {
@@ -93,12 +93,6 @@ namespace Microsoft.AspNet.JsonPatch.Helpers
             }
 
             return -1;
-        }
-
-        public static JsonObjectContract GetJsonContract(JsonSerializerSettings serializerSettings, Type t)
-        {
-            var jsonSerializer = JsonSerializer.Create(serializerSettings);
-            return (JsonObjectContract)jsonSerializer.ContractResolver.ResolveContract(t);
         }
     }
 }
