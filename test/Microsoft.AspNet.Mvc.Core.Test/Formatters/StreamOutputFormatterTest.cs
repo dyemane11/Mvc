@@ -11,39 +11,6 @@ namespace Microsoft.AspNet.Mvc
     public class StreamOutputFormatterTest
     {
         [Theory]
-        [InlineData(typeof(Stream), typeof(FileStream), "text/plain", "text/plain")]
-        [InlineData(typeof(object), typeof(FileStream), "text/plain", "text/plain")]
-        [InlineData(typeof(object), typeof(MemoryStream), "text/plain", "text/plain")]
-        [InlineData(typeof(object), typeof(object), "text/plain", null)]
-        [InlineData(typeof(object), typeof(string), "text/plain", null)]
-        [InlineData(typeof(object), null, "text/plain", null)]
-        [InlineData(typeof(IActionResult), null, "text/plain", null)]
-        [InlineData(typeof(IActionResult), typeof(IActionResult), "text/plain", null)]
-        public void GetSupportedContentTypes_ReturnsAppropriateValues(Type declaredType,
-                                                                      Type runtimeType,
-                                                                      string contentType,
-                                                                      string expected)
-        {
-            // Arrange
-            var formatter = new StreamOutputFormatter();
-            var contentTypeHeader = contentType == null ? null : new MediaTypeHeaderValue(contentType);
-
-            // Act
-            var contentTypes = formatter.GetSupportedContentTypes(declaredType, runtimeType, contentTypeHeader);
-
-            // Assert
-            if (expected == null)
-            {
-                Assert.Null(contentTypes);
-            }
-            else
-            {
-                Assert.Equal(1, contentTypes.Count);
-                Assert.Equal(expected, contentTypes[0].ToString());
-            }
-        }
-
-        [Theory]
         [InlineData(typeof(object))]
         [InlineData(typeof(SimplePOCO))]
         [InlineData(null)]
