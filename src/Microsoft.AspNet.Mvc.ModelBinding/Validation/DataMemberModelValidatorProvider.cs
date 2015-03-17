@@ -6,49 +6,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Microsoft.AspNet.Mvc.ModelBinding.Metadata;
 
-namespace Microsoft.AspNet.Mvc.ModelBinding
+namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
     /// <summary>
     /// This <see cref="IModelValidatorProvider"/> provides a required ModelValidator for members marked
     /// as <c>[DataMember(IsRequired=true)]</c>.
     /// </summary>
-    public class DataMemberModelValidatorProvider : AssociatedValidatorProvider
+    public class DataMemberModelValidatorProvider : IModelValidatorProvider
     {
-        protected override IEnumerable<IModelValidator> GetValidators(ModelMetadata metadata,
-                                                                      IEnumerable<object> attributes)
+        public void GetValidators(ModelValidatorProviderContext context)
         {
             // Types cannot be required; only properties can
-            if (metadata.ContainerType == null || string.IsNullOrEmpty(metadata.PropertyName))
+            if (context.ModelMetadata.MetadataKind != ModelMetadataKind.Property)
             {
-                return Enumerable.Empty<IModelValidator>();
+                return;
             }
 
-            if (IsRequiredDataMember(metadata.ContainerType, attributes))
+            var dataMemberAttribute = context
+                .ValidatorMetadata
+                .OfType<DataMemberAttribute>()
+                .FirstOrDefault();
+            if (dataMemberAttribute == null || !dataMemberAttribute.IsRequired)
             {
-                return new[] { new RequiredMemberModelValidator() };
+                return;
             }
 
-            return Enumerable.Empty<IModelValidator>();
-        }
-
-        internal static bool IsRequiredDataMember(Type containerType, IEnumerable<object> attributes)
-        {
-            var dataMemberAttribute = attributes.OfType<DataMemberAttribute>()
-                                                .FirstOrDefault();
-            if (dataMemberAttribute != null)
+            // isDataContract == true iff the container type has at least one DataContractAttribute
+            var containerType = context.ModelMetadata.ContainerType.GetTypeInfo();
+            var isDataContract = containerType.GetCustomAttribute<DataContractAttribute>() != null;
+            if (isDataContract)
             {
-                // isDataContract == true iff the container type has at least one DataContractAttribute
-                var isDataContract = containerType.GetTypeInfo()
-                                                  .GetCustomAttributes()
-                                                  .OfType<DataContractAttribute>()
-                                                  .Any();
-                if (isDataContract && dataMemberAttribute.IsRequired)
-                {
-                    return true;
-                }
+                context.Validators.Add(new RequiredMemberModelValidator());
             }
-            return false;
         }
     }
 }

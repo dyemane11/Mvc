@@ -98,6 +98,8 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 
             var content = new StringContent(input, Encoding.UTF8, "application/json");
 
+            System.Diagnostics.Debugger.Launch();
+
             var url = "http://localhost/ModelMetadataTypeValidation/ValidateProductViewModelIncludingMetadata";
 
             // Act

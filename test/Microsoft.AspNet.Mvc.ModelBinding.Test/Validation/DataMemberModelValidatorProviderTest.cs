@@ -4,7 +4,7 @@
 using System.Runtime.Serialization;
 using Xunit;
 
-namespace Microsoft.AspNet.Mvc.ModelBinding
+namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
     public class DataMemberModelValidatorProviderTest
     {
@@ -16,12 +16,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             // Arrange
             var provider = new DataMemberModelValidatorProvider();
             var metadata = _metadataProvider.GetMetadataForProperty(typeof(ClassWithoutAttributes), "TheProperty");
+            var validatorProviderContext = new ModelValidatorProviderContext(metadata);
 
             // Act
-            var validators = provider.GetValidators(metadata);
+            provider.GetValidators(validatorProviderContext);
 
             // Assert
-            Assert.Empty(validators);
+            Assert.Empty(validatorProviderContext.Validators);
         }
 
         private class ClassWithoutAttributes
@@ -35,12 +36,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             // Arrange
             var provider = new DataMemberModelValidatorProvider();
             var metadata = _metadataProvider.GetMetadataForProperty(typeof(ClassWithDataMemberIsRequiredTrue), "TheProperty");
+            var validatorProviderContext = new ModelValidatorProviderContext(metadata);
 
             // Act
-            var validators = provider.GetValidators(metadata);
+            provider.GetValidators(validatorProviderContext);
 
             // Assert
-            var validator = Assert.Single(validators);
+            var validator = Assert.Single(validatorProviderContext.Validators);
             Assert.True(validator.IsRequired);
         }
 
@@ -57,12 +59,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             // Arrange
             var provider = new DataMemberModelValidatorProvider();
             var metadata = _metadataProvider.GetMetadataForProperty(typeof(ClassWithDataMemberIsRequiredFalse), "TheProperty");
+            var validatorProviderContext = new ModelValidatorProviderContext(metadata);
 
             // Act
-            var validators = provider.GetValidators(metadata);
+            provider.GetValidators(validatorProviderContext);
 
             // Assert
-            Assert.Empty(validators);
+            Assert.Empty(validatorProviderContext.Validators);
         }
 
         [DataContract]
@@ -78,12 +81,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             // Arrange
             var provider = new DataMemberModelValidatorProvider();
             var metadata = _metadataProvider.GetMetadataForProperty(typeof(ClassWithDataMemberIsRequiredTrueWithoutDataContract), "TheProperty");
+            var validatorProviderContext = new ModelValidatorProviderContext(metadata);
 
             // Act
-            var validators = provider.GetValidators(metadata);
+            provider.GetValidators(validatorProviderContext);
 
             // Assert
-            Assert.Empty(validators);
+            Assert.Empty(validatorProviderContext.Validators);
         }
 
         private class ClassWithDataMemberIsRequiredTrueWithoutDataContract

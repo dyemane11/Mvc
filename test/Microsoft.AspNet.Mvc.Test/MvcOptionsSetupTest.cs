@@ -4,6 +4,7 @@
 using System;
 using System.Xml.Linq;
 using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Mvc.ModelBinding.Validation;
 using Microsoft.AspNet.Mvc.Razor;
 using Newtonsoft.Json.Linq;
 using Xunit;

@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Linq;
+using Microsoft.AspNet.Mvc.ModelBinding.Validation;
 using Microsoft.Framework.Internal;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding
@@ -25,9 +25,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
         public IReadOnlyList<IModelValidatorProvider> ValidatorProviders { get; }
 
-        public IEnumerable<IModelValidator> GetValidators(ModelMetadata metadata)
+        public void GetValidators(ModelValidatorProviderContext context)
         {
-            return ValidatorProviders.SelectMany(v => v.GetValidators(metadata));
+            foreach (var validatorProvider in ValidatorProviders)
+            {
+                validatorProvider.GetValidators(context);
+            }
         }
     }
 }

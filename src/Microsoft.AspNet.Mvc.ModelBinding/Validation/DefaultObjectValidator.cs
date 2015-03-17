@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNet.Mvc.ModelBinding.Internal;
+using Microsoft.AspNet.Mvc.ModelBinding.Validation;
 using Microsoft.Framework.Internal;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding
@@ -84,7 +85,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 // the same for all the elements of the array, we do not do GetValidators for each element,
                 // instead we just pass them over. See ValidateElements function.
                 var validatorProvider = validationContext.ModelValidationContext.ValidatorProvider;
-                validators = validatorProvider.GetValidators(modelExplorer.Metadata);
+                var validatorProviderContext = new ModelValidatorProviderContext(modelExplorer.Metadata);
+                validatorProvider.GetValidators(validatorProviderContext);
+
+                validators = validatorProviderContext.Validators;
             }
 
             // We don't need to recursively traverse the graph for null values
@@ -186,7 +190,11 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             var elementType = GetElementType(model.GetType());
             var elementMetadata = _modelMetadataProvider.GetMetadataForType(elementType);
 
-            var validators = validationContext.ModelValidationContext.ValidatorProvider.GetValidators(elementMetadata);
+            var validatorProvider = validationContext.ModelValidationContext.ValidatorProvider;
+            var validatorProviderContext = new ModelValidatorProviderContext(elementMetadata);
+            validatorProvider.GetValidators(validatorProviderContext);
+
+            var validators = validatorProviderContext.Validators;
 
             // If there are no validators or the object is null we bail out quickly
             // when there are large arrays of null, this will save a significant amount of processing
