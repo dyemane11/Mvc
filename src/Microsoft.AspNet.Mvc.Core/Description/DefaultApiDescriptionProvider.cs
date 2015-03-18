@@ -296,10 +296,10 @@ namespace Microsoft.AspNet.Mvc.Description
             {
                 foreach (var formatter in formatters)
                 {
-                    var formatterMetadataProvider = formatter as IApiFormatterMetadataProvider;
-                    if (formatterMetadataProvider != null)
+                    var responseFormatMetadataProvider = formatter as IApiResponseFormatMetadataProvider;
+                    if (responseFormatMetadataProvider != null)
                     {
-                        var supportedTypes = formatterMetadataProvider.GetSupportedContentTypes(
+                        var supportedTypes = responseFormatMetadataProvider.GetSupportedContentTypes(
                             declaredType, 
                             runtimeType, 
                             contentType);

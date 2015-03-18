@@ -17,7 +17,7 @@ namespace Microsoft.AspNet.Mvc
     /// <summary>
     /// Writes an object to the output stream.
     /// </summary>
-    public abstract class OutputFormatter : IOutputFormatter, IApiFormatterMetadataProvider
+    public abstract class OutputFormatter : IOutputFormatter, IApiResponseFormatMetadataProvider
     {
         // using a field so we can return it as both IList and IReadOnlyList
         private readonly List<MediaTypeHeaderValue> _supportedMediaTypes;

@@ -309,72 +309,69 @@ namespace Microsoft.AspNet.Mvc.Core.Test.ActionResults
             httpResponse.VerifySet(r => r.ContentType = expectedContentType);
         }
 
-        //[Theory]
-        //[InlineData("")]
-        //[InlineData(null)]
-        //[InlineData("application/xml")]
-        //[InlineData("application/custom")]
-        //[InlineData("application/xml;q=1, application/custom;q=0.8")]
-        //public void SelectFormatter_WithNoMatchingAcceptHeadersAndRequestContentType_PicksFormatterBasedOnObjectType
-        //    (string acceptHeader)
-        //{
-        //    // For no accept headers,
-        //    // can write is called twice once for the request media type and once for the type match pass.
-        //    // For each additional accept header, it is called once.
-        //    // Arrange
-        //    var acceptHeaderCollection = string.IsNullOrEmpty(acceptHeader) ?
-        //        null : MediaTypeHeaderValue.ParseList(new[] { acceptHeader }).ToArray();
-        //    var stream = new MemoryStream();
-        //    var httpResponse = new Mock<HttpResponse>();
-        //    httpResponse.SetupProperty<string>(o => o.ContentType);
-        //    httpResponse.SetupGet(r => r.Body).Returns(stream);
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData("application/xml")]
+        [InlineData("application/custom")]
+        [InlineData("application/xml;q=1, application/custom;q=0.8")]
+        public void SelectFormatter_WithNoMatchingAcceptHeadersAndRequestContentType_PicksFormatterBasedOnObjectType
+            (string acceptHeader)
+        {
+            // For no accept headers,
+            // can write is called twice once for the request Content-Type and once for the type match pass.
+            // For each additional accept header, it is called once.
+            // Arrange
+            var acceptHeaderCollection = string.IsNullOrEmpty(acceptHeader) ?
+                null : MediaTypeHeaderValue.ParseList(new[] { acceptHeader }).ToArray();
+            var stream = new MemoryStream();
+            var httpResponse = new Mock<HttpResponse>();
+            httpResponse.SetupProperty<string>(o => o.ContentType);
+            httpResponse.SetupGet(r => r.Body).Returns(stream);
 
-        //    var actionContext = CreateMockActionContext(httpResponse.Object,
-        //                                                requestAcceptHeader: acceptHeader,
-        //                                                requestContentType: "application/xml");
-        //    var requestContentType = MediaTypeHeaderValue.Parse("application/xml");
-        //    var input = "testInput";
-        //    var result = new ObjectResult(input);
-        //    var mockCountingFormatter = new Mock<IOutputFormatter>();
+            var actionContext = CreateMockActionContext(httpResponse.Object,
+                                                        requestAcceptHeader: acceptHeader,
+                                                        requestContentType: "application/xml");
+            var input = "testInput";
+            var result = new ObjectResult(input);
+            var mockCountingFormatter = new Mock<IOutputFormatter>();
 
-        //    var context = new OutputFormatterContext()
-        //    {
-        //        ActionContext = actionContext,
-        //        Object = input,
-        //        DeclaredType = typeof(string)
-        //    };
-        //    var mockCountingSupportedContentType = MediaTypeHeaderValue.Parse("application/text");
-        //    mockCountingFormatter.Setup(o => o.CanWriteResult(context,
-        //                                    It.IsNotIn<MediaTypeHeaderValue>(mockCountingSupportedContentType)))
-        //                         .Returns(false);
-        //    mockCountingFormatter.Setup(o => o.CanWriteResult(context, mockCountingSupportedContentType))
-        //                         .Returns(true);
+            var context = new OutputFormatterContext()
+            {
+                ActionContext = actionContext,
+                Object = input,
+                DeclaredType = typeof(string)
+            };
+            var mockCountingSupportedContentType = MediaTypeHeaderValue.Parse("application/text");
+            mockCountingFormatter.Setup(o => o.CanWriteResult(context,
+                                           It.Is<MediaTypeHeaderValue>(mth => mth == null)))
+                                .Returns(true);
+            mockCountingFormatter.Setup(o => o.CanWriteResult(context, mockCountingSupportedContentType))
+                                 .Returns(true);
 
-        //    mockCountingFormatter.Setup(o => o.GetSupportedContentTypes(context.DeclaredType,
-        //                                                                input.GetType(),
-        //                                                                It.IsAny<MediaTypeHeaderValue>()))
-        //                         .Returns(new List<MediaTypeHeaderValue> { mockCountingSupportedContentType });
+            // Set more than one formatters. The test output formatter throws on write.
+            result.Formatters = new List<IOutputFormatter>
+                                    {
+                                        new CannotWriteFormatter(),
+                                        mockCountingFormatter.Object,
+                                    };
 
-        //    // Set more than one formatters. The test output formatter throws on write.
-        //    result.Formatters = new List<IOutputFormatter>
-        //                            {
-        //                                new CannotWriteFormatter(),
-        //                                mockCountingFormatter.Object,
-        //                            };
+            // Act
+            var formatter = result.SelectFormatter(context, result.Formatters);
 
-        //    // Act
-        //    var formatter = result.SelectFormatter(context, result.Formatters);
-
-        //    // Assert
-        //    Assert.Equal(mockCountingFormatter.Object, formatter);
-        //    mockCountingFormatter.Verify(v => v.CanWriteResult(context,
-        //                                                       mockCountingSupportedContentType),
-        //                                                       Times.Once());
-        //    var callCount = (acceptHeaderCollection == null ? 0 : acceptHeaderCollection.Count()) + 1;
-        //    mockCountingFormatter.Verify(v => v.CanWriteResult(context,
-        //                                      It.IsNotIn<MediaTypeHeaderValue>(mockCountingSupportedContentType)),
-        //                                      Times.Exactly(callCount));
-        //}
+            // Assert
+            Assert.Equal(mockCountingFormatter.Object, formatter);
+            mockCountingFormatter.Verify(v => v.CanWriteResult(context, null), Times.Once());
+            
+            // CanWriteResult is invoked for the following cases:
+            // 1. For each accept header present
+            // 2. Request Content-Type
+            // 3. Type based match
+            var callCount = (acceptHeaderCollection == null ? 0 : acceptHeaderCollection.Count()) + 2;
+            mockCountingFormatter.Verify(v => v.CanWriteResult(context,
+                                              It.IsNotIn<MediaTypeHeaderValue>(mockCountingSupportedContentType)),
+                                              Times.Exactly(callCount));
+        }
 
         [Fact]
         public async Task

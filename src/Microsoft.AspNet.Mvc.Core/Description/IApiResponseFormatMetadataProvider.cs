@@ -7,7 +7,12 @@ using Microsoft.Net.Http.Headers;
 
 namespace Microsoft.AspNet.Mvc.Description
 {
-    public interface IApiFormatterMetadataProvider
+    /// <summary>
+    /// Provides metadata information about the response format to an <see cref="IApiDescriptionProvider"/>.
+    /// An <see cref="IOutputFormatter"/> should implement this interface if it wants to expose metadata information
+    /// to an <see cref="IApiDescriptionProvider"/>.
+    /// </summary>
+    public interface IApiResponseFormatMetadataProvider
     {
         /// <summary>
         /// Gets a filtered list of content types which are supported by the <see cref="IOutputFormatter"/> 
