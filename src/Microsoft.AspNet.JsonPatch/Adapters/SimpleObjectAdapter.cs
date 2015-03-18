@@ -129,6 +129,12 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
                     string.Format("Patch failed: property at location path: {0} does not exist", path),
                     objectToApplyTo);
             }
+            if (propertyMetadata.Property.Ignored)
+            {
+                throw new JsonPatchException<T>(operationToReport,
+                    string.Format("Patch failed: cannot update property at location path: {0}", path),
+                    objectToApplyTo);
+            }
 
             // it exists.  If it' an array, add to that array.  If it's not, we replace.
             // is the path an array (but not a string (= char[]))?  In this case,
@@ -136,13 +142,15 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             if (appendList || positionAsInteger > -1)
             {
                 var isNonStringArray = !(propertyMetadata.Property.PropertyType == typeof(string))
-                    && typeof(IList).GetTypeInfo().IsAssignableFrom(propertyMetadata.Property.PropertyType.GetTypeInfo());
+                    && typeof(IList).GetTypeInfo().IsAssignableFrom(
+                        propertyMetadata.Property.PropertyType.GetTypeInfo());
 
                 // what if it's an array but there's no position??
                 if (isNonStringArray)
                 {
                     // now, get the generic type of the enumerable
-                    var genericTypeOfArray = PropertyHelpers.GetEnumerableType(propertyMetadata.Property.PropertyType);
+                    var genericTypeOfArray = PropertyHelpers.GetEnumerableType(
+                        propertyMetadata.Property.PropertyType);
 
                     var conversionResult = PropertyHelpers.ConvertToActualType(genericTypeOfArray, value);
 
@@ -259,6 +267,12 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
                     string.Format("Patch failed: property at location from: {0} does not exist", operation.from),
                     objectToApplyTo);
             }
+            if (propertyMetadata.Property.Ignored)
+            {
+                throw new JsonPatchException<T>(operation,
+                    string.Format("Patch failed: cannot update property at location path: {0}", operation.from),
+                    objectToApplyTo);
+            }
 
             // is the path an array (but not a string (= char[]))?  In this case,
             // the path must end with "/position" or "/-", which we already determined before.
@@ -362,6 +376,12 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             {
                 throw new JsonPatchException<T>(operationToReport,
                     string.Format("Patch failed: property at location path: {0} does not exist", path),
+                    objectToApplyTo);
+            }
+            if (propertyMetadata.Property.Ignored)
+            {
+                throw new JsonPatchException<T>(operationToReport,
+                    string.Format("Patch failed: cannot update property at location path: {0}", path),
                     objectToApplyTo);
             }
 
@@ -502,6 +522,12 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
                     string.Format("Patch failed: property at location path: {0} does not exist", operation.path),
                     objectToApplyTo);
             }
+            if (propertyMetadata.Property.Ignored)
+            {
+                throw new JsonPatchException<T>(operation,
+                    string.Format("Patch failed: cannot update property at location path: {0}", operation.path),
+                    objectToApplyTo);
+            }
 
             // get the property path
             Type typeOfFinalPropertyAtPathLocation;
@@ -512,7 +538,8 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             {
 
                 var isNonStringArray = !(propertyMetadata.Property.PropertyType == typeof(string))
-                    && typeof(IList).GetTypeInfo().IsAssignableFrom(propertyMetadata.Property.PropertyType.GetTypeInfo());
+                    && typeof(IList).GetTypeInfo().IsAssignableFrom(
+                        propertyMetadata.Property.PropertyType.GetTypeInfo());
 
                 if (isNonStringArray)
                 {
@@ -641,6 +668,12 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
                     string.Format("Patch failed: property at location from: {0} does not exist", operation.from),
                     objectToApplyTo);
             }
+            if (propertyMetadata.Property.Ignored)
+            {
+                throw new JsonPatchException<T>(operation,
+                    string.Format("Patch failed: cannot update property at location path: {0}", operation.from),
+                    objectToApplyTo);
+            }
 
             // get the property path
             // is the path an array (but not a string (= char[]))?  In this case,
@@ -648,7 +681,8 @@ namespace Microsoft.AspNet.JsonPatch.Adapters
             if (positionAsInteger > -1)
             {
                 var isNonStringArray = !(propertyMetadata.Property.PropertyType == typeof(string))
-                    && typeof(IList).GetTypeInfo().IsAssignableFrom(propertyMetadata.Property.PropertyType.GetTypeInfo());
+                    && typeof(IList).GetTypeInfo().IsAssignableFrom(
+                        propertyMetadata.Property.PropertyType.GetTypeInfo());
 
                 if (isNonStringArray)
                 {
